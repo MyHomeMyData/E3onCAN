@@ -13,13 +13,13 @@
     sudo ip link set can0 up type can bitrate 250000
 
 # Usage
-    usage: E3onCAN.py [-h] [-c CAN] [-r READ] [-m MQTT] [-mfstr MQTTFORMATSTRING] [-muser MQTTUSER] [-mpass MQTTPASS] [-v]
+    usage: E3onCANclient.py [-h] [-c CAN] [-r READ] [-m MQTT] [-mfstr MQTTFORMATSTRING] [-muser MQTTUSER] [-mpass MQTTPASS] [-v]
 
     options:
     -h, --help            show this help message and exit
     -c CAN, --can CAN     use can device, e.g. can0
-    -r READ, --read READ  read did, e.g. 0x173,0x174
-    -m MQTT, --mqtt MQTT  publish to server, e.g. 192.168.0.1:1883:topicname
+    -r READ, --read READ  read did, e.g. 1690,1834
+    -m MQTT, --mqtt MQTT  publish to server, e.g. localhost:1883:topicname
     -mfstr MQTTFORMATSTRING, --mqttformatstring MQTTFORMATSTRING
                             mqtt formatstring e.g. {didNumber}_{didName}
     -muser MQTTUSER, --mqttuser MQTTUSER
@@ -29,15 +29,15 @@
     -v, --verbose         verbose info
 
 # Read dids
-    python3 E3onCAN.py -c can0 -r 1690,1834 -v
+    python3 E3onCANclient.py -c can0 -r 1690,1834 -v
     1690 ElectricalEnergySystemPhotovoltaicStatus 42.0
     1834 ElectricalEnergyStorageStateOfEnergy 14500.0
 
 # Publish datapoints to mqtt
-    python3 E3onCAN.py -c can0 -r 1690,1834 -m localhost:1883:open3e
+    python3 E3onCANclient.py -c can0 -r 1690,1834 -m localhost:1883:open3e
     -> will decode received datapoints and publish data to broker localhost on topic open3e/did_name
 
-    python3 E3onCAN.py -c can0 -r 1690,1834 -m localhost:1883:open3e -mfstr {didNumber:04d}_{didName}
+    python3 E3onCANclient.py -c can0 -r 1690,1834 -m localhost:1883:open3e -mfstr {didNumber:04d}_{didName}
     -> will publish with custom identifier format: e.g. open3e/1690_ElectricalEnergySystemPhotovoltaicStatus
 
 # Restrictions
