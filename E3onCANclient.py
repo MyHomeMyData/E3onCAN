@@ -19,11 +19,16 @@ import argparse
 import time
 import paho.mqtt.client as paho
 
-import E3onCANdatapoints
-from E3onCANdatapoints import *
+import E3onCANdatapointsVX3
+from E3onCANdatapointsVX3 import *
+
+import E3onCANdatapointsEM380
+from E3onCANdatapointsEM380 import *
 
 import E3onCANcodecs
 from E3onCANcodecs import *
+
+canDict = {}
 
 def setupCanDict(dids, dataIDs):
     CanDict = {}
@@ -37,8 +42,22 @@ def setupCanDict(dids, dataIDs):
             canIDs.append(dataID.canId)
     return CanDict, filters
 
+def parseDid(p):
+    global canDict
+    dataID = CanDict[p]
+    valStr = str(dataID.decode(msg.data))
+    if (args.mqtt != None):
+        topicStr = mqttformatstring.format(
+            didName = dataID.idStr,
+            didNumber = dataID.did
+        )
+        ret = client_mqtt.publish(mqttParamas[2] + "/" + topicStr, valStr)
+    if (args.verbose == True):
+        print (str(dataID.did), dataID.idStr, valStr)
+
 parser = argparse.ArgumentParser()
 parser.add_argument("-c", "--can", type=str, help="use can device, e.g. can0")
+parser.add_argument("-dev", "--dev", type=str, help="device type --dev vx3 or --dev em380")
 parser.add_argument("-r", "--read", type=str, help="read did, e.g. 0x173,0x174")
 parser.add_argument("-m", "--mqtt", type=str, help="publish to server, e.g. 192.168.0.1:1883:topicname")
 parser.add_argument("-mfstr", "--mqttformatstring", type=str, help="mqtt formatstring e.g. {didNumber}_{didName}")
@@ -47,8 +66,14 @@ parser.add_argument("-mpass", "--mqttpass", type=str, help="mqtt password")
 parser.add_argument("-v", "--verbose", action='store_true', help="verbose info")
 args = parser.parse_args()
 
+if(args.dev == None):
+    args.dev = "em380"
+
 if (args.read != None):
-    CanDict, filters = setupCanDict(args.read.split(","), dataIdentifiers)
+    if args.dev == "em380":
+        CanDict, filters = setupCanDict(args.read.split(","), dataIdentifiersEM380)
+    if args.dev == "vx3":
+        CanDict, filters = setupCanDict(args.read.split(","), dataIdentifiersVX3)
 else:
     print('No did(s) specified. "E3onCAN -h" for help.')
     exit(0)
@@ -80,20 +105,17 @@ try:
 
         # iterate over received messages
         for msg in bus:
-            did = msg.data[1]+256*msg.data[2]
-            p = getPattern(msg.arbitration_id,msg.data[0],did)
-            if p in CanDict:
-                dataID = CanDict[p]
-                valStr = str(dataID.decode(msg.data))
-                if (args.mqtt != None):
-                    topicStr = mqttformatstring.format(
-                        didName = dataID.idStr,
-                        didNumber = did
-                    )
-                    ret = client_mqtt.publish(mqttParamas[2] + "/" + topicStr, valStr)
-                if (args.verbose == True):
-                    print (str(did), dataID.idStr, valStr)
+            if args.dev == "vx3":
+                did = msg.data[1]+256*msg.data[2]
+                p = getPattern(msg.arbitration_id,msg.data[0],did)
+                if p in CanDict:
+                    parseDid(p)
 
+            if args.dev == "em380":
+                p = ''.join('{:04x}'.format(msg.arbitration_id))
+                if p in CanDict:
+                    parseDid(p)
+                    
 except (KeyboardInterrupt, InterruptedError):
     # got <STRG-C> or SIGINT (<kill -s SIGINT pid>)
     pass

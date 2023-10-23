@@ -17,7 +17,7 @@
 import E3onCANcodecs
 from E3onCANcodecs import *
 
-dataIdentifiers = {
+dataIdentifiersVX3 = {
      378 : E3Int16( 378, 2, "PointOfCommonCouplingPhaseOne", signed=True, offset=4, scale=1.0, unit="W", canId=0x451, canD0=0x21),
      379 : E3Int16( 379, 2, "PointOfCommonCouplingPhaseOne", signed=True, offset=4, scale=1.0, unit="W", canId=0x451, canD0=0x21),
      380 : E3Int16( 380, 2, "PointOfCommonCouplingPhaseOne", signed=True, offset=4, scale=1.0, unit="W", canId=0x451, canD0=0x21),

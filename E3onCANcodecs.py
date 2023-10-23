@@ -15,6 +15,7 @@
 """
 
 from typing import Optional, Any
+import json
 
 def getPattern(Id, D0, did) -> str:
     p = ''
@@ -57,10 +58,97 @@ class E3Int16():
 
     def decode(self, data: bytearray) -> Any:
         val = int.from_bytes([data[self.offset + 1],data[self.offset + 0]], byteorder="big", signed=self.signed)
-        return val / self.scale;
+        return val / self.scale
 
     def pattern(self) -> str:
         return getPattern(self.canId, self.canD0, self.did)
+
+    def __len__(self) -> int:
+        return self.data_len
+
+class E3EM380_16():
+    def __init__(self, did:int, data_len: int, idStr: str, signed: bool = True, unit: str = "", canId: int = 0):
+        self.did = did
+        self.data_len = data_len
+        self.idStr = idStr
+        self.signed = signed
+        self.unit = unit
+        self.canId = canId
+
+    def decode(self, data: bytearray) -> Any:
+        vals = []
+        for ofs in range(0,int(self.data_len/2)):
+            val = int.from_bytes(data[2*ofs:2*ofs+2], byteorder="little", signed=self.signed)
+            vals.append(val)
+        return vals
+
+    def pattern(self) -> str:
+        return ''.join('{:04x}'.format(self.canId))
+
+    def __len__(self) -> int:
+        return self.data_len
+
+class E3EM380Int():
+    def __init__(self, did:int, data_len: int, idStr: str, scale: float = 1.0, signed: bool = True, unit: str = "", canId: int = 0):
+        self.did = did
+        self.data_len = data_len
+        self.idStr = idStr
+        self.scale = scale
+        self.signed = signed
+        self.unit = unit
+        self.canId = canId
+
+    def decode(self, data: bytearray) -> Any:
+        val = int.from_bytes(data[0:self.data_len], byteorder="little", signed=self.signed)
+        return val/self.scale
+
+    def pattern(self) -> str:
+        return ''.join('{:04x}'.format(self.canId))
+
+    def __len__(self) -> int:
+        return self.data_len
+
+class E3EM380cosPhi():
+    def __init__(self, did:int, data_len: int, idStr: str, scale: float = 1.0, signed: bool = True, unit: str = "", canId: int = 0):
+        self.did = did
+        self.data_len = data_len
+        self.idStr = idStr
+        self.scale = scale
+        self.signed = signed
+        self.unit = unit
+        self.canId = canId
+
+    def decode(self, data: bytearray) -> Any:
+        val = int.from_bytes(data[1:2], byteorder="little", signed=False)
+        if data[0] == 0x04:
+            val = -1.0*val
+        return val/self.scale
+
+    def pattern(self) -> str:
+        return ''.join('{:04x}'.format(self.canId))
+
+    def __len__(self) -> int:
+        return self.data_len
+
+class E3ComplexType():
+    def __init__(self, did:int, data_len: int, idStr: str, offset: int, subTypes : list, canId: int = 0):
+        self.did = did
+        self.data_len = data_len
+        self.idStr = idStr
+        self.offset = offset
+        self.canId = canId
+        self.subTypes = subTypes
+
+    def decode(self, data: bytes) -> Any:
+        result = {}
+        index = 0
+        for subType in self.subTypes:
+            result[subType.idStr] = subType.decode(data[self.offset+index:self.offset+index+subType.data_len])
+            index+=subType.data_len
+        return json.dumps(result)
+    
+    def pattern(self) -> str:
+        return ''.join('{:04x}'.format(self.canId))
 
     def __len__(self) -> int:
         return self.data_len
