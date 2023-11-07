@@ -124,7 +124,7 @@ devCANid = {
 }
     
 if (args.canid != None):
-    CANid_str=eval(args.canid)
+    CANid=eval(args.canid)
 else:
     CANid = devCANid[device]
 
