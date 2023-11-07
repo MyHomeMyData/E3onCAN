@@ -14,12 +14,14 @@
     sudo ip link set can0 up type can bitrate 250000
 
 # Usage
-    usage: E3onCANcollect.py [-h] [-c CAN] [-dev vx3|vcal|vair|e380] [-r READ] [-raw] [-m MQTT] [-mfstr MQTTFORMATSTRING] [-muser MQTTUSER] [-mpass MQTTPASS] [-retain] [-retainall] [-v]
+    usage: E3onCANcollect.py [-h] [-c CAN] [-dev vx3|vcal|vair|e380] [-canid CANID] [-r READ] [-raw] [-m MQTT] [-mfstr MQTTFORMATSTRING] [-muser MQTTUSER] [-mpass MQTTPASS] [-retain] [-retainall] [-v]
 
     options:
     -h, --help            show this help message and exit
     -c CAN, --can CAN     use can device, e.g. can0
     -dev dev, --dev dev   device, vx3 or vcal or vair or e380
+    -canid CANID, --canid CANID
+                          CAN id to listen to, e.g. -canid 0x451, overrides CAN id selected by device
     -r READ, --read READ  read did, e.g. 1690,1834
     -raw, --raw           return raw data for all dids
     -m MQTT, --mqtt MQTT  publish to server, e.g. localhost:1883:topicname
