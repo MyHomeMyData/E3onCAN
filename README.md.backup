@@ -56,7 +56,7 @@
 
 # E380 data and units
 
-|    ID | Data| Unit |
+|    ID | data                | unit |
 | ------|:----|------|
 | 0x250 | Active Power L1, L2, L3, Total |  W |
 | 0x252 | Reactive Power L1, L2, L3, Total | W |
