@@ -56,8 +56,8 @@
 
 # E380 data and units
 
-|    ID | Data| Unit |
-| ------|:----|------|
+| ID | Data| Unit |
+| ------|:--- |------|
 | 0x250 | Active Power L1, L2, L3, Total |  W |
 | 0x252 | Reactive Power L1, L2, L3, Total | W |
 | 0x254 | Current, L1, L2, L3, cosPhi | A, - |
@@ -65,7 +65,6 @@
 | 0x258 | Cumulated Import, Export | kWh |
 | 0x25A | Total Active Power, Total Reactive Power | W |
 | 0x25C | Cumulated Import | kWh |
-   
 
 # Limitations, Hints
 * Scans for available data on CAN bus, no active request for data as with open3e.
