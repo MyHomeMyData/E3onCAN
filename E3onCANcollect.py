@@ -120,7 +120,7 @@ devCANid = {
     "vx3"  : 0x451,
     "vair" : 0x451,
     "vdens": 0x451,
-    "e380": [0x250,0x252,0x254,0x256,0x258,0x25a]
+    "e380" : list(dataIdentifiersE380.keys())
 }
     
 if (args.canid != None):

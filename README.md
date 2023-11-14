@@ -61,5 +61,5 @@
 * Data of slave device (e.g. VX3) typically is available on external CAN, data of master device (e.g. Vitocal) typically is available on internal CAN
 * Will probably not work on stand alone devices. See open3e for this case.
 * Works for energy meter E380 on stand alone VX3 configuration.
-* For E380 dids are set equal to CAN ids. CAN ids are restricted to 0x250,0x252,0x254,0x256,0x258,0x25A
+* For E380 dids are set equal to CAN ids. CAN ids are restricted to 0x250,0x252,0x254,0x256,0x258,0x25A,0x25C
 * To scan more than one device at the same time, start one instance for each device
