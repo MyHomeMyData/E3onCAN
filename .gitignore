@@ -1,0 +1,8 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+# local log files
+udsoncan.log
+scan.log
+.vscode/
+README.md.backup
