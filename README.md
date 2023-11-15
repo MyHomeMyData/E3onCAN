@@ -5,6 +5,7 @@
 * Decode raw data to physical units for many datapoints
 * Optionally send data via MQTT
 * Tested so far on external CAN bus of Vitocal 250 connected to Vitocharge VX3 and for E380
+* Processing of candumps instead of live data possible
 * Based on open3e, see https://github.com/abnoname/open3e.git 
 
 # Requirements
@@ -37,7 +38,7 @@
    	                      set mqtt retain flag for all dids
     -v, --verbose         verbose info
 
-# Read dids
+# Read datapoints
     python3 E3onCANcollect.py -c can0 -dev vx3 -r 1690,1834 -v
     1690 ElectricalEnergySystemPhotovoltaicStatus 42.0
     1834 ElectricalEnergyStorageStateOfEnergy 14500.0
@@ -53,6 +54,10 @@
     python3 E3onCANcollect.py -c can0 -dev vx3 -m localhost:1883:open3e -mfstr {device}_{didNumber:04d}_{didName} -retain 1834
     -> will publish **all** received dids with custom identifier format: e.g. open3e/vx3_1690_ElectricalEnergySystemPhotovoltaicStatus
     -> mqtt retain flag for did 1834 will be set
+
+# Convert candump log to datapoints
+    candump -t a can0 > candump.log
+    python3 E3onCANcollect.py -f candump.log -dev vx3 -canid 0x451 -v
 
 # E380 data and units
 
@@ -73,5 +78,5 @@
 * Data of slave device (e.g. VX3) typically is available on external CAN, data of master device (e.g. Vitocal) typically is available on internal CAN
 * Will probably not work on stand alone devices. See open3e for this case.
 * Works for energy meter E380 on stand alone VX3 configuration.
-* For E380 dids are set equal to CAN ids. CAN ids are restricted to 0x250,0x252,0x254,0x256,0x258,0x25A,0x25C
+* For E380 datapoints ids are set equal to CAN ids. CAN ids are restricted to 0x250,0x252,0x254,0x256,0x258,0x25A,0x25C
 * To scan more than one device at the same time, start one instance for each device

@@ -16,20 +16,12 @@
 
 import can          # https://pypi.org/project/python-can/
 import argparse
-import time
 import paho.mqtt.client as paho
+import importlib
+import datetime
 
-import Open3EdatapointsVcal
-from Open3EdatapointsVcal import *
-
-import Open3EdatapointsVair
-from Open3EdatapointsVair import *
-
-import Open3EdatapointsVdens
-from Open3EdatapointsVdens import *
-
-import Open3EdatapointsVx3
-from Open3EdatapointsVx3 import *
+import Open3Edatapoints
+from Open3Edatapoints import *
 
 import E3onCANdatapointsE380
 from E3onCANdatapointsE380 import *
@@ -40,41 +32,117 @@ from Open3Ecodecs import *
 import E3onCANcodecs
 from E3onCANcodecs import *
 
-def decodeData(device, canid, did, databytes):
-    try:
-        dataIdentifier = dataIdentifiers[device]
-        if did in dataIdentifier:
-            values = dataIdentifier[did].decode(databytes)
-            valStr = str(values)
-            if (args.mqtt != None):
-                topicStr = mqttformatstring.format(
-                    device = device,
-                    didName = dataIdentifier[did].id,
-                    didNumber = did
-                )
-                set_retain = (retainall == True) or (did in retaindids)
-                if(dataIdentifier[did].complex == True): 
-                    # complex datatype
-                    for key, value in values.items():
-                        ret = client_mqtt.publish(mqttParamas[2] + "/" + topicStr + "/" + str(key), str(value), retain=set_retain)
-                else:
-                    # scalar datatype
-                    ret = client_mqtt.publish(mqttParamas[2] + "/" + topicStr, valStr, retain=set_retain)
-                if (args.verbose == True):
-                    print(str(did)+' '+dataIdentifier[did].id+': '+valStr)
-            else:
-                if (args.verbose == True):
-                    print(str(did)+' '+dataIdentifier[did].id+': '+valStr)
-                else:
-                    print(valStr)
+def decodeData(device, canid, ts, did, databytes):
+    def mqttdump(topic, obj, set_retain):
+        if (type(obj)==dict):
+            for k, itm in obj.items():
+                mqttdump(topic+'/'+str(k),itm, set_retain)
+        elif (type(obj)==list):
+            for k in range(len(obj)):
+                mqttdump(topic+'/'+str(k),obj[k], set_retain)
         else:
-            print('No codec found for did '+str(did)+' ('+hex(did)+'): '+databytes.hex(' '))
-    except Exception as e:
-        print('Exception "'+str(e)+'" on did '+str(did)+': '+databytes.hex(' '))
-        pass
+            ret = client_mqtt.publish(topic, str(obj), retain=set_retain)                  
+
+    if did in dataIdentifiers:
+        try:
+            topicPf = ''    # clear topic Prefix
+            didNAME = dataIdentifiers[did].id
+            values  = dataIdentifiers[did].decode(databytes)
+        except Exception as e:
+            # Exception while decoding
+            topicPf = "$"   # set topic Prefix
+            values = {
+                        "Error": "Exception: "+str(e),
+                        "Did": did,
+                        "Raw": databytes.hex()
+                     }
+    else:
+        # No codec available for this did
+        topicPf = "$"   # set topic Prefix
+        didNAME = "Unknown"
+        values = {
+                    "Error": "No codec found for did",
+                    "Did": did,
+                    "Raw": databytes.hex()
+                 }
+
+    if (args.mqtt != None):
+        topicStr = topicPf + mqttformatstring.format(
+            device = device,
+            didName = didNAME,
+            didNumber = did
+        )
+        set_retain = (retainall == True) or (did in retaindids)
+
+        if (args.json == True): 
+            # Send one JSON message 
+            ret = client_mqtt.publish(mqttParamas[2] + "/" + topicStr, json.dumps(values))    
+        else:
+            # Split down to scalar types
+            mqttdump(mqttParamas[2] + "/" + topicStr, values, set_retain)
+        if (args.verbose == True):
+            print(str(did)+' '+didNAME+': '+json.dumps(values))
+    else:
+        if (args.verbose == True):
+            if ts > 0:
+                dt_str = str(datetime.datetime.fromtimestamp(ts))+' '
+            else:
+                dt_str = ''
+            print(dt_str+str(did)+' '+didNAME+': '+json.dumps(values))
+        else:
+            print(didNAME+': '+json.dumps(values))
+
+def evalMessages(bus, device, args):
+    data = {
+            "len"       : 0,
+            "timestamp" : 0,
+            "databytes" : bytearray(),
+            "did"       : 0,
+            "collecting": False,
+            "D0"        : 0x21,
+    }
+
+    for msg in bus:
+        id = msg.arbitration_id
+        if args.dev == 'e380':
+            # e380 sends 8 bytes of data w/o any protocol
+            # use CAN id as did
+            did = id
+            decodeData(device,id,msg.timestamp,did,msg.data)
+        else:
+            if data["collecting"]:
+                data["D0"] += 1
+                if data["D0"] > 0x2f:
+                    data["D0"] = 0x20
+                if msg.data[0] == data["D0"]:
+                    # append next part of data
+                    data["databytes"] += msg.data[1:]
+                else:
+                    # no more data
+                    data["collecting"] = False
+                    if (dids == None) or (data["did"] in dids):
+                        decodeData(device, id, data["timestamp"], data["did"],data["databytes"][0:data["len"]])
+
+            if not data["collecting"] and (msg.dlc > 4) and (msg.data[0] == 0x21) and (msg.data[3] in range(0xb0,0xc0)):
+                data["D0"] = msg.data[0]
+                D3 = msg.data[3]
+                if D3 == 0xb0:
+                    data["len"] = msg.data[4]
+                    if msg.data[5]==0xb5:
+                        data["databytes"] = msg.data[6:]
+                    else:
+                        data["databytes"] = msg.data[5:]
+                else:
+                    data["len"] = D3-0xb0
+                    data["databytes"] = msg.data[4:]
+                data["did"] = msg.data[1]+256*msg.data[2]
+                if data["did"] > 0 and data["did"] < 10000:
+                    data["timestamp"] = msg.timestamp
+                    data["collecting"] = True
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-c", "--can", type=str, help="use can device, e.g. can0")
+parser.add_argument("-f", "--file", type=str, help="use candump as input, e.g. candump_vx3")
 parser.add_argument("-dev", "--dev", type=str, help="device type --dev vcal or --dev vx3 or --dev vair or --dev vdens or --dev e380")
 parser.add_argument("-canid", "--canid", type=str, help="CAN id to listen to --canid  0x451, overrides CAN id selected by device")
 parser.add_argument("-r", "--read", type=str, help="read did, e.g. 0x173,0x174")
@@ -83,6 +151,7 @@ parser.add_argument("-m", "--mqtt", type=str, help="publish to server, e.g. 192.
 parser.add_argument("-mfstr", "--mqttformatstring", type=str, help="mqtt formatstring e.g. {didNumber}_{didName}")
 parser.add_argument("-muser", "--mqttuser", type=str, help="mqtt username")
 parser.add_argument("-mpass", "--mqttpass", type=str, help="mqtt password")
+parser.add_argument("-j", "--json", action='store_true', help="send JSON structure")
 parser.add_argument("-retain", "--retain", type=str, help="set retained flag for dids, e.g. 1834,1836")
 parser.add_argument("-retainall", "--retainall", action='store_true', help="set retained flag for all dids")
 parser.add_argument("-v", "--verbose", action='store_true', help="verbose info")
@@ -90,14 +159,6 @@ args = parser.parse_args()
 
 Open3Ecodecs.flag_rawmode = args.raw
 E3onCANcodecs.flag_rawmode = args.raw
-
-dataIdentifiers = {
-    "vx3"   : dataIdentifiersVx3[0x680]["dids"],
-    "vair"  : dataIdentifiersVair[0x680]["dids"],
-    "vcal"  : dataIdentifiersVcal[0x680]["dids"],
-    "vdens" : dataIdentifiersVdens[0x680]["dids"],
-    "e380" : dataIdentifiersE380,
-    }
 
 if(args.dev != None):
     device = args.dev
@@ -107,13 +168,40 @@ else:
 
 Open3Ecodecs.flag_dev = device
 
-if not device in dataIdentifiers.keys():
+if not device in ['vx3','vair','vcal','vdens','e380']:
     print('Unknown device '+device+'. Aborting.')
     exit(0)
 
 if (device == 'e380') and (args.canid != None):
     print('Specification CAN ids not allowed for device E380. Aborting.')
     exit(0)
+
+if device == 'e380':
+    dataIdentifiers = dataIdentifiersE380
+else:
+    # load datapoints for selected device
+    module_name =  "Open3Edatapoints" + device.capitalize()
+    didmoduledev = importlib.import_module(module_name)
+    dataIdentifiersDev = didmoduledev.dataIdentifiers["dids"]
+
+    # load general datapoints table from Open3Edatapoints.py
+    dataIdentifiers = dataIdentifiers["dids"]
+
+    # overlay device dids over general table 
+    lstpops = []
+    for itm in dataIdentifiers:
+        if not (itm in dataIdentifiersDev):
+            lstpops.append(itm)
+        elif not (dataIdentifiersDev[itm] is None):  # None means 'no change', nothing special
+            dataIdentifiers[itm] = dataIdentifiersDev[itm]
+
+    # remove dids not existing with the device
+    for itm in lstpops:
+        dataIdentifiers.pop(itm)
+
+    # probably useless but to indicate that it's not required anymore
+    dataIdentifiersDev = None
+    didmoduledev = None
 
 devCANid = {
     "vcal" : 0x693,
@@ -122,9 +210,9 @@ devCANid = {
     "vdens": 0x451,
     "e380" : list(dataIdentifiersE380.keys())
 }
-    
+
 if (args.canid != None):
-    CANid=eval(args.canid)
+    CANid = eval(args.canid)
 else:
     CANid = devCANid[device]
 
@@ -141,15 +229,6 @@ if (dids == []):
     print('No valid dids specified. Aborting.')
     exit(0)
 
-data = {
-        "len"       : 0,
-        "databytes" : bytearray(),
-        "fulldata"  : bytearray(),
-        "did"       : 0,
-        "collecting": False,
-        "D0"        : 0x21,
-}
-
 if args.dev == 'e380':
     filters = []
     for id in CANid:
@@ -160,6 +239,9 @@ else:
 
 if(args.can != None):
     channel = args.can
+    args.file = None        # Avoid contradicting channels
+elif (args.file != None):
+    channel = args.file
 else:
     channel = 'can0'
 
@@ -186,49 +268,17 @@ if(args.mqtt != None):
     print("Wait for dids and publish to mqtt...")
 
 try:
-    with can.Bus(interface='socketcan',
-                  channel=channel,
-                  receive_own_messages=True, can_filters=filters) as bus:
+    if (args.file == None):
+        with can.Bus(interface='socketcan',
+                    channel=channel,
+                    receive_own_messages=True, can_filters=filters) as bus:
+            # iterate over received messages
+            evalMessages(bus, device, args)
+    else:
+        import candump2msgbus as dump
+        mydump = dump.candump2msgBus(args.file, CANid)
+        evalMessages(mydump.file2messages(), device, args)
 
-        # iterate over received messages
-        for msg in bus:
-            id = msg.arbitration_id
-            if args.dev == 'e380':
-                # e380 sends 8 bytes of data w/o any protocol
-                # use CAN id as did
-                did = id
-                decodeData(device, id,did,msg.data)
-            else:
-                if data["collecting"]:
-                    data["D0"] += 1
-                    if data["D0"] > 0x2f:
-                        data["D0"] = 0x20
-                    if msg.data[0] == data["D0"]:
-                        # append next part of data
-                        data["databytes"] += msg.data[1:]
-                        data["fulldata"] += msg.data[1:]
-                    else:
-                        # no more data
-                        data["collecting"] = False
-                        if (dids == None) or (data["did"] in dids):
-                            decodeData(device, id,data["did"],data["databytes"][0:data["len"]])
-
-                if not data["collecting"] and (msg.dlc > 4) and (msg.data[0] == 0x21) and (msg.data[3] in range(0xb0,0xc0)):
-                    data["D0"] = msg.data[0]
-                    D3 = msg.data[3]
-                    if D3 == 0xb0:
-                        data["len"] = msg.data[4]
-                        if msg.data[5]==0xb5:
-                            data["databytes"] = msg.data[6:]
-                        else:
-                            data["databytes"] = msg.data[5:]
-                    else:
-                        data["len"] = D3-0xb0
-                        data["databytes"] = msg.data[4:]
-                    data["fulldata"] = msg.data
-                    data["did"] = msg.data[1]+256*msg.data[2]
-                    if data["did"] > 0 and data["did"] < 10000:
-                        data["collecting"] = True
                                         
 except (KeyboardInterrupt, InterruptedError):
     # got <STRG-C> or SIGINT (<kill -s SIGINT pid>)

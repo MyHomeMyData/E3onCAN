@@ -13,14 +13,12 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 """
-
-import udsoncan 
-
+from udsoncan.common.DidCodec import DidCodec
 from typing import Optional, Any
 
 flag_rawmode = True
 
-class E3RawCodec(udsoncan.DidCodec):
+class E3RawCodec(DidCodec):
     def __init__(self, string_len: int, idStr: str):
         self.string_len = string_len
         self.id = idStr
@@ -33,7 +31,7 @@ class E3RawCodec(udsoncan.DidCodec):
     def __len__(self) -> int:
         return self.string_len
 
-class E3Int(udsoncan.DidCodec):
+class E3Int(DidCodec):
     def __init__(self, string_len: int, idStr: str, byte_width: int, scale: float = 1.0, offset: int = 0, signed=False):
         self.string_len = string_len
         self.byte_width = byte_width
