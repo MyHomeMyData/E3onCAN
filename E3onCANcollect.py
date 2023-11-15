@@ -218,7 +218,10 @@ try:
                     D3 = msg.data[3]
                     if D3 == 0xb0:
                         data["len"] = msg.data[4]
-                        data["databytes"] = msg.data[5:]
+                        if msg.data[5]==0xb5:
+                            data["databytes"] = msg.data[6:]
+                        else:
+                            data["databytes"] = msg.data[5:]
                     else:
                         data["len"] = D3-0xb0
                         data["databytes"] = msg.data[4:]
