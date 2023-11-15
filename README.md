@@ -39,13 +39,13 @@
     -v, --verbose         verbose info
 
 # Read datapoints
-    python3 E3onCANcollect.py -c can0 -dev vx3 -r 1690,1834 -v
-    1690 ElectricalEnergySystemPhotovoltaicStatus 42.0
-    1834 ElectricalEnergyStorageStateOfEnergy 14500.0
+    python3 E3onCANcollect.py -c can0 -dev vx3 -r 1834 -v
+    2023-11-15 18:00:37.186155 1834 ElectricalEnergyStorageStateOfEnergy: {"SoC": 3863.0, "Unkown": 0.0}
+    2023-11-15 18:00:49.215978 1834 ElectricalEnergyStorageStateOfEnergy: {"SoC": 3858.0, "Unkown": 0.0}
     
     python3 E3onCANcollect.py -c can0 -dev e380 -r 0x250,0x256 -v
-	592 GridActivePower: {'L1_W': 690.0, 'L2_W': 313.0, 'L3_W': 275.0, 'Total_W': 1278.0}
-	598 GridVoltage: {'L1_V': 233.0, 'L2_V': 235.0, 'L3_V': 233.0, 'Frequency_Hz': 50.0}
+    2023-11-15 18:02:49.874932 592 GridActivePower: {"L1": 96.0, "L2": 7.0, "L3": -108.0, "Total": -4.0}
+    2023-11-15 18:02:49.878761 598 GridVoltage: {"L1": 233.0, "L2": 234.0, "L3": 233.0, "Frequency": 50.0}
     
 # Publish datapoints to mqtt
     python3 E3onCANcollect.py -c can0 -dev vx3 -r 1690,1834 -m localhost:1883:open3e
@@ -58,6 +58,9 @@
 # Convert candump log to datapoints
     candump -t a can0 > candump.log
     python3 E3onCANcollect.py -f candump.log -dev vx3 -canid 0x451 -v
+    2023-11-15 14:39:11.046815 378 PointOfCommonCouplingPhaseOne: {"ActivePower": 55.0, "ReactivePower": -119.0}
+    2023-11-15 14:39:11.059317 379 PointOfCommonCouplingPhaseTwo: {"ActivePower": -22.0, "ReactivePower": -81.0}
+    2023-11-15 14:39:11.073367 380 PointOfCommonCouplingPhaseThree: {"ActivePower": -38.0, "ReactivePower": -89.0}
 
 # E380 data and units
 

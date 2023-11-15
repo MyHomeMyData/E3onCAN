@@ -4,5 +4,6 @@ __pycache__/
 # local log files
 udsoncan.log
 scan.log
-.vscode/
 README.md.backup
+# vscode
+.vscode/
