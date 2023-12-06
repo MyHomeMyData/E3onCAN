@@ -120,17 +120,18 @@ def evalMessages(bus, device, args):
                 else:
                     # no more data
                     data["collecting"] = False
-                    if (dids == None) or (data["did"] in dids):
+                    if ((dids == None) or (data["did"] in dids)) and (len(data["databytes"]) >= data["len"]):
                         decodeData(device, id, data["timestamp"], data["did"],data["databytes"][0:data["len"]])
 
             if not data["collecting"] and (msg.dlc > 4) and (msg.data[0] == 0x21) and (msg.data[3] in range(0xb0,0xc0)):
                 data["D0"] = msg.data[0]
                 D3 = msg.data[3]
                 if D3 == 0xb0:
-                    data["len"] = msg.data[4]
                     if msg.data[5]==0xb5:
+                        data["len"] = msg.data[5]
                         data["databytes"] = msg.data[6:]
                     else:
+                        data["len"] = msg.data[4]
                         data["databytes"] = msg.data[5:]
                 else:
                     data["len"] = D3-0xb0
