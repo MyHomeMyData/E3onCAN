@@ -132,7 +132,8 @@ def evalMessages(bus, device, args):
                         # Single Frame B1,B2,B3,B4
                         data["len"] = D3-0xb0
                         data["databytes"] = msg.data[4:]
-                        decodeData(device, id, data["timestamp"], data["did"],data["databytes"][0:data["len"]])
+                        if ((dids == None) or (data["did"] in dids)):
+                            decodeData(device, id, data["timestamp"], data["did"],data["databytes"][0:data["len"]])
 
                     if D3 == 0xb0:
                         # Multi Frame B0
