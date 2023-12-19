@@ -143,14 +143,15 @@ def evalMessages(bus, device, args):
                         else:
                             data["len"] = msg.data[4]
                             data["databytes"] = msg.data[5:]
+                        data["collecting"] = True
 
                     if D3 in range(0xb5,0xc0):
                         # Multi Frame B5 .. BF
                         data["D0expected"] = msg.data[0]+1
                         data["len"] = D3-0xb0
                         data["databytes"] = msg.data[4:]
+                        data["collecting"] = True
 
-                    data["collecting"] = True
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-c", "--can", type=str, help="use can device, e.g. can0")
