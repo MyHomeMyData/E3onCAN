@@ -99,7 +99,7 @@ def evalMessages(bus, device, args):
             "databytes" : bytearray(),
             "did"       : 0,
             "collecting": False,
-            "D0"        : 0x21,
+            "D0expected": 0x21,
     }
 
     for msg in bus:
@@ -111,34 +111,45 @@ def evalMessages(bus, device, args):
             decodeData(device,id,msg.timestamp,did,msg.data)
         else:
             if data["collecting"]:
-                data["D0"] += 1
-                if data["D0"] > 0x2f:
-                    data["D0"] = 0x20
-                if msg.data[0] == data["D0"]:
+                if msg.data[0] == data["D0expected"]:
                     # append next part of data
                     data["databytes"] += msg.data[1:]
+                    data["D0expected"] += 1
+                    if data["D0expected"] > 0x2f:
+                        data["D0expected"] = 0x20
                 else:
                     # no more data
-                    data["collecting"] = False
                     if ((dids == None) or (data["did"] in dids)) and (len(data["databytes"]) >= data["len"]):
                         decodeData(device, id, data["timestamp"], data["did"],data["databytes"][0:data["len"]])
+                    data["collecting"] = False
 
             if not data["collecting"] and (msg.dlc > 4) and (msg.data[0] == 0x21) and (msg.data[3] in range(0xb0,0xc0)):
-                data["D0"] = msg.data[0]
-                D3 = msg.data[3]
-                if D3 == 0xb0:
-                    if msg.data[5]==0xb5:
-                        data["len"] = msg.data[5]
-                        data["databytes"] = msg.data[6:]
-                    else:
-                        data["len"] = msg.data[4]
-                        data["databytes"] = msg.data[5:]
-                else:
-                    data["len"] = D3-0xb0
-                    data["databytes"] = msg.data[4:]
                 data["did"] = msg.data[1]+256*msg.data[2]
                 if data["did"] > 0 and data["did"] < 10000:
                     data["timestamp"] = msg.timestamp
+                    D3 = msg.data[3]
+                    if D3 in [0xb1,0xb2,0xb3,0xb4]:
+                        # Single Frame B1,B2,B3,B4
+                        data["len"] = D3-0xb0
+                        data["databytes"] = msg.data[4:]
+                        decodeData(device, id, data["timestamp"], data["did"],data["databytes"][0:data["len"]])
+
+                    if D3 == 0xb0:
+                        # Multi Frame B0
+                        data["D0expected"] = msg.data[0]+1
+                        if msg.data[4]==0xc1:
+                            data["len"] = msg.data[5]
+                            data["databytes"] = msg.data[6:]
+                        else:
+                            data["len"] = msg.data[4]
+                            data["databytes"] = msg.data[5:]
+
+                    if D3 in range(0xb5,0xc0):
+                        # Multi Frame B5 .. BF
+                        data["D0expected"] = msg.data[0]+1
+                        data["len"] = D3-0xb0
+                        data["databytes"] = msg.data[4:]
+
                     data["collecting"] = True
 
 parser = argparse.ArgumentParser()
