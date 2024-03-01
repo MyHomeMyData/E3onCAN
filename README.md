@@ -67,14 +67,15 @@
 | ID | Data| Unit |
 | ------|:--- |------|
 | 0x250 | Active Power L1, L2, L3, Total |  W |
-| 0x252 | Reactive Power L1, L2, L3, Total | W |
+| 0x252 | Reactive Power L1, L2, L3, Total | VA |
 | 0x254 | Current, L1, L2, L3, cosPhi | A, - |
 | 0x256 | Voltage, L1, L2, L3, Frequency | V, Hz |
 | 0x258 | Cumulated Import, Export | kWh |
-| 0x25A | Total Active Power, Total Reactive Power | W |
+| 0x25A | Total Active Power, Total Reactive Power | W, VA |
 | 0x25C | Cumulated Import | kWh |
 
 # Limitations, Hints
+* **Important:** After updating to new version pls. apply an update also to dependet packages: `pip3 install -r requirements.txt`
 * Scans for available data on CAN bus, no active request for data as with open3e.
 * Works best on external CAN bus of Vitocal 250 when connected to Vitocharge VX3 via external bus.
 * Data is typically updated by E3 device on change of value.

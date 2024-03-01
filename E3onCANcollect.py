@@ -273,7 +273,7 @@ if(args.mqtt != None):
     mqttParamas = args.mqtt.split(":")
     if(args.mqttformatstring != None):
         mqttformatstring = args.mqttformatstring
-    client_mqtt = paho.Client("E3onCANclient.py")
+    client_mqtt = paho.Client(paho.CallbackAPIVersion.VERSION2, "E3onCANclient.py")
     if((args.mqttuser != None) and (args.mqttpass != None)):
         client_mqtt.username_pw_set(args.mqttuser , password=args.mqttpass)
     client_mqtt.connect(mqttParamas[0], int(mqttParamas[1]))
