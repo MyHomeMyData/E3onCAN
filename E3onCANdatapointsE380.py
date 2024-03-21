@@ -18,11 +18,20 @@ import E3onCANcodecs
 from E3onCANcodecs import *
 
 dataIdentifiersE380 = {
+    # Even ID => E380 with CAN-address=97
+    # Odd ID  => E380 with CAN-address=98
     0x250: E3ComplexType(8, "GridActivePower", [E3Int16(2, "L1", scale=1.0, signed=True), E3Int16(2, "L2", scale=1.0, signed=True), E3Int16(2, "L3", scale=1.0, signed=True), E3Int16(2, "Total", scale=1.0, signed=True)]),
+    0x251: E3ComplexType(8, "GridActivePower", [E3Int16(2, "L1", scale=1.0, signed=True), E3Int16(2, "L2", scale=1.0, signed=True), E3Int16(2, "L3", scale=1.0, signed=True), E3Int16(2, "Total", scale=1.0, signed=True)]),
     0x252: E3ComplexType(8, "GridReactivePower", [E3Int16(2, "L1", scale=1.0, signed=True), E3Int16(2, "L2", scale=1.0, signed=True), E3Int16(2, "L3", scale=1.0, signed=True), E3Int16(2, "Total", scale=1.0, signed=True)]),
+    0x253: E3ComplexType(8, "GridReactivePower", [E3Int16(2, "L1", scale=1.0, signed=True), E3Int16(2, "L2", scale=1.0, signed=True), E3Int16(2, "L3", scale=1.0, signed=True), E3Int16(2, "Total", scale=1.0, signed=True)]),
     0x254: E3ComplexType(8, "GridCurrent", [E3Int16(2, "L1", scale=1.0, signed=True), E3Int16(2, "L2", scale=1.0, signed=True), E3Int16(2, "L3", scale=1.0, signed=True), E3cosPhi(2, "cosPhi", scale=100.0, signed=True)]),
+    0x255: E3ComplexType(8, "GridCurrent", [E3Int16(2, "L1", scale=1.0, signed=True), E3Int16(2, "L2", scale=1.0, signed=True), E3Int16(2, "L3", scale=1.0, signed=True), E3cosPhi(2, "cosPhi", scale=100.0, signed=True)]),
     0x256: E3ComplexType(8, "GridVoltage", [E3Int16(2, "L1", scale=1.0, signed=False), E3Int16(2, "L2", scale=1.0, signed=False), E3Int16(2, "L3", scale=1.0, signed=False), E3Int16(2, "Frequency", scale=100.0, signed=False)]),
+    0x257: E3ComplexType(8, "GridVoltage", [E3Int16(2, "L1", scale=1.0, signed=False), E3Int16(2, "L2", scale=1.0, signed=False), E3Int16(2, "L3", scale=1.0, signed=False), E3Int16(2, "Frequency", scale=100.0, signed=False)]),
     0x258: E3ComplexType(8, "GridEnergy", [E3Int32(4, "ImportCumulated", scale=2000.0, signed=False), E3Int32(4, "ExportCumulated", scale=2000.0, signed=False)]),  # Cumulated import and export (kWh)
+    0x259: E3ComplexType(8, "GridEnergy", [E3Int32(4, "ImportCumulated", scale=2000.0, signed=False), E3Int32(4, "ExportCumulated", scale=2000.0, signed=False)]),  # Cumulated import and export (kWh)
     0x25A: E3ComplexType(8, "GridPower", [E3Int32(4, "ActivePower", scale=10.0, signed=True), E3Int32(4, "ReactivePower", scale=10.0, signed=True)]),
-    0x25C: E3ComplexType(4, "GridEnergy", [E3Int32(4, "ImportCumulated", scale=100, signed=False)])    # Cumulated import (kWh)
+    0x25B: E3ComplexType(8, "GridPower", [E3Int32(4, "ActivePower", scale=10.0, signed=True), E3Int32(4, "ReactivePower", scale=10.0, signed=True)]),
+    0x25C: E3ComplexType(4, "GridEnergy", [E3Int32(4, "ImportCumulated", scale=100, signed=False)]),   # Cumulated import (kWh)
+    0x25D: E3ComplexType(4, "GridEnergy", [E3Int32(4, "ImportCumulated", scale=100, signed=False)])    # Cumulated import (kWh)
 }

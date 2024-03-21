@@ -187,7 +187,7 @@ if not device in ['vx3','vair','vcal','vdens','e380']:
     exit(0)
 
 if (device == 'e380') and (args.canid != None):
-    print('Specification CAN ids not allowed for device E380. Aborting.')
+    print('Specification of CAN ids not allowed for device E380. Aborting.')
     exit(0)
 
 if device == 'e380':

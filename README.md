@@ -1,8 +1,8 @@
 # E3onCAN
 * Grab live data on CAN bus of Viessmann E3 series, e.g. Vitocharge VX3, Vitocal 250
-* Grab live data on CAN bus of Viessmann energy meter E380 CA
+* Grab live data on CAN bus of Viessmann energy meter E380 CA (up to two devices)
 * Only read operations are done on CAN bus. No write operations are possible.
-* Decode raw data to physical units for many datapoints
+* Decode raw data to physical units for many data points
 * Optionally send data via MQTT
 * Tested so far on external CAN bus of Vitocal 250 connected to Vitocharge VX3 and for E380
 * Processing of candumps instead of live data possible
@@ -22,7 +22,7 @@
     -c CAN, --can CAN     use can device, e.g. can0
     -dev dev, --dev dev   device, vx3 or vcal or vair or e380
     -canid CANID, --canid CANID
-                          CAN id to listen to, e.g. -canid 0x451, overrides CAN id selected by device
+                          CAN ID to listen to, e.g. -canid 0x451, overrides CAN ID selected by device
     -r READ, --read READ  read did, e.g. 1690,1834
     -raw, --raw           return raw data for all dids
     -m MQTT, --mqtt MQTT  publish to server, e.g. localhost:1883:topicname
@@ -38,7 +38,7 @@
    	                      set mqtt retain flag for all dids
     -v, --verbose         verbose info
 
-# Read datapoints
+# Read data points
     python3 E3onCANcollect.py -c can0 -dev vx3 -r 1834 -v
     2023-11-15 18:00:37.186155 1834 ElectricalEnergyStorageStateOfEnergy: {"SoC": 3863.0, "Unkown": 0.0}
     2023-11-15 18:00:49.215978 1834 ElectricalEnergyStorageStateOfEnergy: {"SoC": 3858.0, "Unkown": 0.0}
@@ -47,15 +47,15 @@
     2023-11-15 18:02:49.874932 592 GridActivePower: {"L1": 96.0, "L2": 7.0, "L3": -108.0, "Total": -4.0}
     2023-11-15 18:02:49.878761 598 GridVoltage: {"L1": 233.0, "L2": 234.0, "L3": 233.0, "Frequency": 50.0}
     
-# Publish datapoints to mqtt
+# Publish data points to mqtt
     python3 E3onCANcollect.py -c can0 -dev vx3 -r 1690,1834 -m localhost:1883:open3e
-    -> will decode received datapoints and publish data to broker localhost on topic open3e/did_name
+    -> will decode received data points and publish data to broker localhost on topic open3e/did_name
 
     python3 E3onCANcollect.py -c can0 -dev vx3 -m localhost:1883:open3e -mfstr {device}_{didNumber:04d}_{didName} -retain 1834
     -> will publish **all** received dids with custom identifier format: e.g. open3e/vx3_1690_ElectricalEnergySystemPhotovoltaicStatus
     -> mqtt retain flag for did 1834 will be set
 
-# Convert candump log to datapoints
+# Convert candump log to data points
     candump -t a can0 > candump.log
     python3 E3onCANcollect.py -f candump.log -dev vx3 -canid 0x451 -v
     2023-11-15 14:39:11.046815 378 PointOfCommonCouplingPhaseOne: {"ActivePower": 55.0, "ReactivePower": -119.0}
@@ -63,16 +63,21 @@
     2023-11-15 14:39:11.073367 380 PointOfCommonCouplingPhaseThree: {"ActivePower": -38.0, "ReactivePower": -89.0}
 
 # E380 data and units
+Up to two E380 energy meters are supported. IDs of data points depends on devices CAN address:
+
+CAN-address=97: data points with even IDs (default configuration)
+
+CAN-address=98: data points with odd IDs
 
 | ID | Data| Unit |
 | ------|:--- |------|
-| 0x250 | Active Power L1, L2, L3, Total |  W |
-| 0x252 | Reactive Power L1, L2, L3, Total | VA |
-| 0x254 | Current, L1, L2, L3, cosPhi | A, - |
-| 0x256 | Voltage, L1, L2, L3, Frequency | V, Hz |
-| 0x258 | Cumulated Import, Export | kWh |
-| 0x25A | Total Active Power, Total Reactive Power | W, VA |
-| 0x25C | Cumulated Import | kWh |
+| 592,593 | Active Power L1, L2, L3, Total |  W |
+| 594,595 | Reactive Power L1, L2, L3, Total | VA |
+| 596,597 | Current, L1, L2, L3, cosPhi | A, - |
+| 598,599 | Voltage, L1, L2, L3, Frequency | V, Hz |
+| 600,601 | Cumulated Import, Export | kWh |
+| 602,603 | Total Active Power, Total Reactive Power | W, VA |
+| 604,605 | Cumulated Import | kWh |
 
 # Limitations, Hints
 * **Important:** After updating to new version pls. apply an update also to dependet packages: `pip3 install -r requirements.txt`
@@ -82,5 +87,5 @@
 * Data of slave device (e.g. VX3) typically is available on external CAN, data of master device (e.g. Vitocal) typically is available on internal CAN
 * Will probably not work on stand alone devices. See open3e for this case.
 * Works for energy meter E380 on stand alone VX3 configuration.
-* For E380 datapoints ids are set equal to CAN ids. CAN ids are restricted to 0x250,0x252,0x254,0x256,0x258,0x25A,0x25C
+* For E380 data point IDs are set equal to CAN IDs. CAN IDs are restricted to the range of 0x250 .. 0x25D (592 .. 605) related to CAN-adresses of 97 (even IDs) and 98 (odd IDs).
 * To scan more than one device at the same time, start one instance for each device
