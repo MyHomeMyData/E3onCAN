@@ -26,6 +26,9 @@ from Open3Edatapoints import *
 import E3onCANdatapointsE380
 from E3onCANdatapointsE380 import *
 
+import E3onCANdatapointsE3100CB
+from E3onCANdatapointsE3100CB import *
+
 import Open3Ecodecs
 from Open3Ecodecs import *
 
@@ -108,7 +111,17 @@ def evalMessages(bus, device, args):
             # e380 sends 8 bytes of data w/o any protocol
             # use CAN id as did
             did = id
-            decodeData(device,id,msg.timestamp,did,msg.data)
+            if (dids == None) or (str(did) in dids):
+                decodeData(device,id,msg.timestamp,did,msg.data)
+        elif args.dev == 'e3100cb' and len(msg.data) == 8:
+            # e3100cb sends 8 bytes of data w/o any protocol
+            # did = CAN id plus databyte 3
+            did = str(id)+'.16.'+str(msg.data[3])   # Test for 16 bit intergers
+            if (dids == None) or (did in dids):
+                decodeData(device,id,msg.timestamp,did,msg.data)
+            did = str(id)+'.32.'+str(msg.data[3])   # Test for 32 bit intergers
+            if (dids == None) or (did in dids):
+                decodeData(device,id,msg.timestamp,did,msg.data)
         else:
             if data["collecting"]:
                 if msg.data[0] == data["D0expected"]:
@@ -119,7 +132,7 @@ def evalMessages(bus, device, args):
                         data["D0expected"] = 0x20
                 else:
                     # no more data
-                    if ((dids == None) or (data["did"] in dids)) and (len(data["databytes"]) >= data["len"]):
+                    if ((dids == None) or (str(data["did"]) in dids)) and (len(data["databytes"]) >= data["len"]):
                         decodeData(device, id, data["timestamp"], data["did"],data["databytes"][0:data["len"]])
                     data["collecting"] = False
 
@@ -132,7 +145,7 @@ def evalMessages(bus, device, args):
                         # Single Frame B1,B2,B3,B4
                         data["len"] = D3-0xb0
                         data["databytes"] = msg.data[4:]
-                        if ((dids == None) or (data["did"] in dids)):
+                        if ((dids == None) or (str(data["did"]) in dids)):
                             decodeData(device, id, data["timestamp"], data["did"],data["databytes"][0:data["len"]])
 
                     if D3 == 0xb0:
@@ -157,8 +170,8 @@ def evalMessages(bus, device, args):
 parser = argparse.ArgumentParser()
 parser.add_argument("-c", "--can", type=str, help="use can device, e.g. can0")
 parser.add_argument("-f", "--file", type=str, help="use candump as input, e.g. candump_vx3")
-parser.add_argument("-dev", "--dev", type=str, help="device type --dev vcal or --dev vx3 or --dev vair or --dev vdens or --dev e380")
-parser.add_argument("-canid", "--canid", type=str, help="CAN id to listen to --canid  0x451, overrides CAN id selected by device")
+parser.add_argument("-dev", "--dev", type=str, help="device type --dev vcal or --dev vx3 or --dev vair or --dev vdens or --dev e380 or --dev e3100cb")
+parser.add_argument("-canid", "--canid", type=str, help="CAN id to listen to --canid 0x451, overrides CAN id selected by device")
 parser.add_argument("-r", "--read", type=str, help="read did, e.g. 0x173,0x174")
 parser.add_argument("-raw", "--raw", action='store_true', help="return raw data for all dids")
 parser.add_argument("-m", "--mqtt", type=str, help="publish to server, e.g. 192.168.0.1:1883:topicname")
@@ -182,16 +195,18 @@ else:
 
 Open3Ecodecs.flag_dev = device
 
-if not device in ['vx3','vair','vcal','vdens','e380']:
+if not device in ['vx3','vair','vcal','vdens','e380','e3100cb']:
     print('Unknown device '+device+'. Aborting.')
     exit(0)
 
-if (device == 'e380') and (args.canid != None):
-    print('Specification of CAN ids not allowed for device E380. Aborting.')
+if (device in ['e380','e3100cb']) and (args.canid != None):
+    print('Specification of CAN ids not allowed for energy meter. Aborting.')
     exit(0)
 
 if device == 'e380':
     dataIdentifiers = dataIdentifiersE380
+elif device == 'e3100cb':
+    dataIdentifiers = dataIdentifiersE3100CB
 else:
     # load datapoints for selected device
     module_name =  "Open3Edatapoints" + device.capitalize()
@@ -218,15 +233,20 @@ else:
     didmoduledev = None
 
 devCANid = {
-    "vcal" : 0x693,
-    "vx3"  : 0x451,
-    "vair" : 0x451,
-    "vdens": 0x451,
-    "e380" : list(dataIdentifiersE380.keys())
+    "vcal" : list([0x693]),
+    "vx3"  : list([0x451]),
+    "vair" : list([0x451]),
+    "vdens": list([0x451]),
+    "e380" : list(dataIdentifiersE380.keys()),
+    "e3100cb" : list([0x568,0x569])
 }
 
 if (args.canid != None):
-    CANid = eval(args.canid)
+    try:
+        CANid = list([eval(args.canid)])
+    except:
+        CANid = devCANid[device]
+        print('WARNING: Could not evaluate given canid, using default value: '+json.dumps(CANid))
 else:
     CANid = devCANid[device]
 
@@ -234,8 +254,12 @@ if (args.read != None):
     dids_str=args.read.split(",")
     dids = []
     for did in dids_str:
-        if ((args.dev != 'e380') or ((args.dev == 'e380') and (eval(did) in CANid))):
-            dids.append(eval(did))
+        if (args.dev == 'e380') and (eval(did) in CANid):
+            dids.append(str(eval(did)))
+        elif args.dev == 'e3100cb':
+            dids.append(did)
+        else:
+            dids.append(str(eval(did)))
 else:
     dids = None
 
@@ -246,10 +270,14 @@ if (dids == []):
 if args.dev == 'e380':
     filters = []
     for id in CANid:
-        if dids == None or id in dids:
+        if dids == None or str(id) in dids:
             filters.append({"can_id": id, "can_mask": 0x7FF, "extended": False})
+elif args.dev == 'e3100cb':
+    filters = []
+    for id in CANid:
+        filters.append({"can_id": id, "can_mask": 0x7FF, "extended": False})
 else:
-    filters = [{"can_id": CANid, "can_mask": 0x7FF, "extended": False}]
+    filters = [{"can_id": CANid[0], "can_mask": 0x7FF, "extended": False}]
 
 if(args.can != None):
     channel = args.can

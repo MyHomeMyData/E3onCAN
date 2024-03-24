@@ -2,8 +2,7 @@
 __pycache__/
 *.py[cod]
 # local log files
-udsoncan.log
-scan.log
+*.log
 README.md.backup
 # vscode
 .vscode/

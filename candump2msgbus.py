@@ -122,7 +122,7 @@ class candump2msgBus():
             ts, can_id_str, can_bytes_str = self.line2data(line, format)
             data = bytearray()
             can_id = eval('0x'+can_id_str)
-            if can_id == self.CANid:
+            if can_id in self.CANid:
                 for b in can_bytes_str:
                     if b>'':
                         data.append(eval('0x'+b))
