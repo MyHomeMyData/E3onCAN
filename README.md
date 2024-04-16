@@ -1,10 +1,11 @@
 # E3onCAN
 * Grab live data on CAN bus of Viessmann E3 series, e.g. Vitocharge VX3, Vitocal 250
 * Grab live data on CAN bus of Viessmann energy meter E380 CA (up to two devices)
+* Grab live data on CAN bus of Viessmann energy meter E3100CB (experimental)
 * Only read operations are done on CAN bus. No write operations are possible.
 * Decode raw data to physical units for many data points
 * Optionally send data via MQTT
-* Tested so far on external CAN bus of Vitocal 250 connected to Vitocharge VX3 and for E380
+* Tested so far on external CAN bus of Vitocal 250 connected to Vitocharge VX3, for E380 and for E3100CB (only roughly tested)
 * Processing of candumps instead of live data possible
 * Based on open3e, see https://github.com/abnoname/open3e.git 
 
@@ -15,12 +16,12 @@
     sudo ip link set can0 up type can bitrate 250000
 
 # Usage
-    usage: E3onCANcollect.py [-h] [-c CAN] [-dev vx3|vcal|vair|e380] [-canid CANID] [-r READ] [-raw] [-m MQTT] [-mfstr MQTTFORMATSTRING] [-muser MQTTUSER] [-mpass MQTTPASS] [-retain] [-retainall] [-v]
+    usage: E3onCANcollect.py [-h] [-c CAN] [-dev vx3|vcal|vair|e380|e3100cb] [-canid CANID] [-r READ] [-raw] [-m MQTT] [-mfstr MQTTFORMATSTRING] [-muser MQTTUSER] [-mpass MQTTPASS] [-retain] [-retainall] [-v]
 
     options:
     -h, --help            show this help message and exit
     -c CAN, --can CAN     use can device, e.g. can0
-    -dev dev, --dev dev   device, vx3 or vcal or vair or e380
+    -dev dev, --dev dev   device, vx3 or vcal or vair or e380 or e3100cb
     -canid CANID, --canid CANID
                           CAN ID to listen to, e.g. -canid 0x451, overrides CAN ID selected by device
     -r READ, --read READ  read did, e.g. 1690,1834
@@ -78,6 +79,25 @@ CAN-address=98: data points with odd IDs
 | 600,601 | Cumulated Import, Export | kWh |
 | 602,603 | Total Active Power, Total Reactive Power | W, VA |
 | 604,605 | Cumulated Import | kWh |
+
+# E3100CB data and units
+
+Still under development!
+
+| ID | Data| Unit |
+| ------|:--- |------|
+| 1385.1  | Cumulated Import | kWh |
+| 1385.2  | Cumulated Export | kWh |
+| 1385.4  | Active Power Total |  W |
+| 1385.8  | Active Power L1 |  W |
+| 1385.12  | Active Power L2 |  W |
+| 1385.16  | Active Power L3 |  W |
+| 1385.9  | Reactive Power L1 |  VA |
+| 1385.13  | Reactive Power L2 |  VA |
+| 1385.17  | Reactive Power L3 |  VA |
+| 1385.7 | Voltage, L1 | V |
+| 1385.11 | Voltage, L2 | V |
+| 1385.15 | Voltage, L3 | V |
 
 # Limitations, Hints
 * **Important:** After updating to new version pls. apply an update also to dependet packages: `pip3 install -r requirements.txt`
