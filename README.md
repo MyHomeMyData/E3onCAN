@@ -98,6 +98,7 @@ CAN-address=98: data points with odd IDs
 
 ### 0.3.0 (2024-04-16)
 * (MyHomeMyData) Main change for id 0x258/0x259 (GridEnergy): Now using correct data format. Many thanks to @M4n197 for unveiling the right data format.
+* (MyHomeMyData) Added support for energy meter E3100CB (experimental).
 
 ### 0.2.0 (2024-03-21)
 * (MyHomeMyData) Added support for E380 with CAN-address=98

@@ -116,12 +116,9 @@ def evalMessages(bus, device, args):
         elif args.dev == 'e3100cb' and len(msg.data) == 8:
             # e3100cb sends 8 bytes of data w/o any protocol
             # did = CAN id plus databyte 3
-            did = str(id)+'.16.'+str(msg.data[3])   # Test for 16 bit intergers
+            did = str(id)+'.'+str(msg.data[3])
             if (dids == None) or (did in dids):
-                decodeData(device,id,msg.timestamp,did,msg.data)
-            did = str(id)+'.32.'+str(msg.data[3])   # Test for 32 bit intergers
-            if (dids == None) or (did in dids):
-                decodeData(device,id,msg.timestamp,did,msg.data)
+                decodeData(device,id,msg.timestamp,did,msg.data[4:])    # Ignore bytes 0 to 3
         else:
             if data["collecting"]:
                 if msg.data[0] == data["D0expected"]:
@@ -238,7 +235,7 @@ devCANid = {
     "vair" : list([0x451]),
     "vdens": list([0x451]),
     "e380" : list(dataIdentifiersE380.keys()),
-    "e3100cb" : list([0x568,0x569])
+    "e3100cb" : list([0x569])
 }
 
 if (args.canid != None):
