@@ -33,13 +33,14 @@ Supported commands and formats:
 
 import sys
 from datetime import datetime
-from can import message
+from can import Bus, message
 
 class candump2msgBus():
     
-    def __init__(self, fn, CANid):
+    def __init__(self, fn, CANid, channel=None):
         self.fn = fn
         self.CANid = CANid
+        self.channel = channel
 
     def line2data(self, line, format):
         parts = line.split(' ')
@@ -95,6 +96,9 @@ class candump2msgBus():
     
     def file2messages(self):
     
+        if self.channel != None:
+            bus = Bus(interface='socketcan', channel=self.channel)
+
         # read file and process line by line
         with open(self.fn, 'r') as f:
             lines = f.readlines()
@@ -130,17 +134,24 @@ class candump2msgBus():
                         arbitration_id=can_id,
                         data=data,
                         dlc=len(data),
-                        timestamp=float(ts)
+                        timestamp=float(ts),
+                        is_extended_id=False
                       )
                 busMessages.append(msg)
+                if self.channel != None:
+                    bus.send(msg)
         
+        if self.channel != None:
+            bus.shutdown()
+
         return busMessages
 
 if __name__ == '__main__':
 
     test_path     = ''
     test_filename = 'candump.test.log'
-    test_CANid    = 0x451
+    test_CANid    = [0x451]
+    test_channel  = None
 
 
     # check for args
@@ -150,6 +161,12 @@ if __name__ == '__main__':
         # use defaults:
         text_datei_pfad = test_path+test_filename
 
-    conv = candump2msgBus(text_datei_pfad, test_CANid)
+    if len(sys.argv) > 2:
+        test_CANid = eval(sys.argv[2])
+
+    if len(sys.argv) > 3:
+        test_channel = sys.argv[3]
+
+    conv = candump2msgBus(text_datei_pfad, test_CANid, test_channel)
     messages = conv.file2messages()
-    print(messages)
+#    print(messages)
