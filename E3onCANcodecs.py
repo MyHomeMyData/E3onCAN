@@ -15,6 +15,7 @@
 """
 from udsoncan.common.DidCodec import DidCodec
 from typing import Optional, Any
+import struct
 
 flag_rawmode = True
 
@@ -27,6 +28,57 @@ class E3RawCodec(DidCodec):
     def decode(self, string_bin: bytes) -> Any:
         string_ascii = string_bin.hex()
         return string_ascii
+
+    def __len__(self) -> int:
+        return self.string_len
+
+class E3Float16(DidCodec):
+    def __init__(self, string_len: int, idStr: str, scale: float = 1.0, offset: int = 0):
+        self.string_len = string_len
+        self.id = idStr
+        self.complex = False
+        self.scale = scale
+        self.offset = offset
+
+    def decode(self, string_bin: bytes) -> Any:
+        if(flag_rawmode == True): 
+            return E3RawCodec.decode(self, string_bin)
+        val = struct.unpack('e', string_bin[self.offset:self.offset+self.string_len])[0]
+        return float(val) / self.scale
+
+    def __len__(self) -> int:
+        return self.string_len
+
+class E3Float32(DidCodec):
+    def __init__(self, string_len: int, idStr: str, scale: float = 1.0, offset: int = 0):
+        self.string_len = string_len
+        self.id = idStr
+        self.complex = False
+        self.scale = scale
+        self.offset = offset
+
+    def decode(self, string_bin: bytes) -> Any:
+        if(flag_rawmode == True): 
+            return E3RawCodec.decode(self, string_bin)
+        val = struct.unpack('f', string_bin[self.offset:self.offset+self.string_len])[0]
+        return float(val) / self.scale
+
+    def __len__(self) -> int:
+        return self.string_len
+
+class E3Float64(DidCodec):
+    def __init__(self, string_len: int, idStr: str, scale: float = 1.0, offset: int = 0):
+        self.string_len = string_len
+        self.id = idStr
+        self.complex = False
+        self.scale = scale
+        self.offset = offset
+
+    def decode(self, string_bin: bytes) -> Any:
+        if(flag_rawmode == True): 
+            return E3RawCodec.decode(self, string_bin)
+        val = struct.unpack('d', string_bin[self.offset:self.offset+self.string_len])[0]
+        return float(val) / self.scale
 
     def __len__(self) -> int:
         return self.string_len

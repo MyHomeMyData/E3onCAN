@@ -89,3 +89,18 @@ CAN-address=98: data points with odd IDs
 * Works for energy meter E380 on stand alone VX3 configuration.
 * For E380 data point IDs are set equal to CAN IDs. CAN IDs are restricted to the range of 0x250 .. 0x25D (592 .. 605) related to CAN-adresses of 97 (even IDs) and 98 (odd IDs).
 * To scan more than one device at the same time, start one instance for each device
+
+## Changelog
+<!--
+    Placeholder for the next version (at the beginning of the line):
+    ### **WORK IN PROGRESS**
+-->
+
+### 0.3.0 (2024-04-16)
+* (MyHomeMyData) Main change for id 0x258/0x259 (GridEnergy): Now using correct data format. Many thanks to @M4n197 for unveiling the right data format.
+
+### 0.2.0 (2024-03-21)
+* (MyHomeMyData) Added support for E380 with CAN-address=98
+
+### 0.1.0 (2023-10-17)
+* (MyHomeMyData) Initial version
