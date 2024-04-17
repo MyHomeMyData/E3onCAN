@@ -153,3 +153,22 @@ class E3ComplexType():
     
     def __len__(self) -> int:
         return self.string_len
+
+class E3StateEM(DidCodec):
+    def __init__(self, string_len: int, idStr: str, offset: int = 0):
+        self.string_len = string_len
+        self.id = idStr
+        self.offset = offset
+
+    def decode(self, string_bin: bytes) -> Any:
+        if(flag_rawmode == True): 
+            return E3RawCodec.decode(self, string_bin)
+        val = string_bin[self.offset]
+        if val == 4:
+            return -1
+        if val == 0:
+            return 1
+        return 0
+
+    def __len__(self) -> int:
+        return self.string_len

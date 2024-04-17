@@ -82,12 +82,13 @@ CAN-address=98: data points with odd IDs
 
 # E3100CB data and units
 
-Still under development!
+Still under development! Meaning of 1385.6, 1385.10, 1385.14 not confirmed.
 
 | ID | Data| Unit |
 | ------|:--- |------|
 | 1385.1  | Cumulated Import | kWh |
 | 1385.2  | Cumulated Export | kWh |
+| 1385.3  | State: -1 => feedin \| +1 => supply | |
 | 1385.4  | Active Power Total |  W |
 | 1385.8  | Active Power L1 |  W |
 | 1385.12  | Active Power L2 |  W |
@@ -95,6 +96,9 @@ Still under development!
 | 1385.9  | Reactive Power L1 |  VA |
 | 1385.13  | Reactive Power L2 |  VA |
 | 1385.17  | Reactive Power L3 |  VA |
+| 1385.6 | Current, L1 | A |
+| 1385.10 | Current, L2 | A |
+| 1385.14 | Current, L3 | A |
 | 1385.7 | Voltage, L1 | V |
 | 1385.11 | Voltage, L2 | V |
 | 1385.15 | Voltage, L3 | V |
@@ -116,7 +120,7 @@ Still under development!
     ### **WORK IN PROGRESS**
 -->
 
-### 0.3.0 (2024-04-16)
+### 0.3.0 (2024-04-17)
 * (MyHomeMyData) Main change for id 0x258/0x259 (GridEnergy): Now using correct data format. Many thanks to @M4n197 for unveiling the right data format.
 * (MyHomeMyData) Added support for energy meter E3100CB (experimental).
 
