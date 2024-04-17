@@ -1,12 +1,12 @@
 {
   "592": {
-    "codec": "E3ComplexType",
+    "codec": "O3EComplexType",
     "len": 8,
     "id": "GridActivePower",
     "args": {
       "subTypes": [
         {
-          "codec": "E3Int16",
+          "codec": "O3EInt16",
           "len": 2,
           "id": "L1",
           "args": {
@@ -16,7 +16,7 @@
           }
         },
         {
-          "codec": "E3Int16",
+          "codec": "O3EInt16",
           "len": 2,
           "id": "L2",
           "args": {
@@ -26,7 +26,7 @@
           }
         },
         {
-          "codec": "E3Int16",
+          "codec": "O3EInt16",
           "len": 2,
           "id": "L3",
           "args": {
@@ -36,7 +36,7 @@
           }
         },
         {
-          "codec": "E3Int16",
+          "codec": "O3EInt16",
           "len": 2,
           "id": "Total",
           "args": {
@@ -49,13 +49,13 @@
     }
   },
   "593": {
-    "codec": "E3ComplexType",
+    "codec": "O3EComplexType",
     "len": 8,
     "id": "GridActivePower",
     "args": {
       "subTypes": [
         {
-          "codec": "E3Int16",
+          "codec": "O3EInt16",
           "len": 2,
           "id": "L1",
           "args": {
@@ -65,7 +65,7 @@
           }
         },
         {
-          "codec": "E3Int16",
+          "codec": "O3EInt16",
           "len": 2,
           "id": "L2",
           "args": {
@@ -75,7 +75,7 @@
           }
         },
         {
-          "codec": "E3Int16",
+          "codec": "O3EInt16",
           "len": 2,
           "id": "L3",
           "args": {
@@ -85,7 +85,7 @@
           }
         },
         {
-          "codec": "E3Int16",
+          "codec": "O3EInt16",
           "len": 2,
           "id": "Total",
           "args": {
@@ -98,13 +98,13 @@
     }
   },
   "594": {
-    "codec": "E3ComplexType",
+    "codec": "O3EComplexType",
     "len": 8,
     "id": "GridReactivePower",
     "args": {
       "subTypes": [
         {
-          "codec": "E3Int16",
+          "codec": "O3EInt16",
           "len": 2,
           "id": "L1",
           "args": {
@@ -114,7 +114,7 @@
           }
         },
         {
-          "codec": "E3Int16",
+          "codec": "O3EInt16",
           "len": 2,
           "id": "L2",
           "args": {
@@ -124,7 +124,7 @@
           }
         },
         {
-          "codec": "E3Int16",
+          "codec": "O3EInt16",
           "len": 2,
           "id": "L3",
           "args": {
@@ -134,7 +134,7 @@
           }
         },
         {
-          "codec": "E3Int16",
+          "codec": "O3EInt16",
           "len": 2,
           "id": "Total",
           "args": {
@@ -147,13 +147,13 @@
     }
   },
   "595": {
-    "codec": "E3ComplexType",
+    "codec": "O3EComplexType",
     "len": 8,
     "id": "GridReactivePower",
     "args": {
       "subTypes": [
         {
-          "codec": "E3Int16",
+          "codec": "O3EInt16",
           "len": 2,
           "id": "L1",
           "args": {
@@ -163,7 +163,7 @@
           }
         },
         {
-          "codec": "E3Int16",
+          "codec": "O3EInt16",
           "len": 2,
           "id": "L2",
           "args": {
@@ -173,7 +173,7 @@
           }
         },
         {
-          "codec": "E3Int16",
+          "codec": "O3EInt16",
           "len": 2,
           "id": "L3",
           "args": {
@@ -183,7 +183,7 @@
           }
         },
         {
-          "codec": "E3Int16",
+          "codec": "O3EInt16",
           "len": 2,
           "id": "Total",
           "args": {
@@ -196,40 +196,43 @@
     }
   },
   "596": {
-    "codec": "E3ComplexType",
+    "codec": "O3EComplexType",
     "len": 8,
     "id": "GridCurrent",
     "args": {
       "subTypes": [
         {
-          "codec": "E3Float16",
+          "codec": "O3EInt16",
           "len": 2,
           "id": "L1",
           "args": {
             "scale": 1.0,
+            "signed": true,
             "offset": 0
           }
         },
         {
-          "codec": "E3Float16",
+          "codec": "O3EInt16",
           "len": 2,
           "id": "L2",
           "args": {
             "scale": 1.0,
+            "signed": true,
             "offset": 0
           }
         },
         {
-          "codec": "E3Float16",
+          "codec": "O3EInt16",
           "len": 2,
           "id": "L3",
           "args": {
             "scale": 1.0,
+            "signed": true,
             "offset": 0
           }
         },
         {
-          "codec": "E3cosPhi",
+          "codec": "O3EcosPhi",
           "len": 2,
           "id": "cosPhi",
           "args": {
@@ -242,40 +245,43 @@
     }
   },
   "597": {
-    "codec": "E3ComplexType",
+    "codec": "O3EComplexType",
     "len": 8,
     "id": "GridCurrent",
     "args": {
       "subTypes": [
         {
-          "codec": "E3Float16",
+          "codec": "O3EInt16",
           "len": 2,
           "id": "L1",
           "args": {
             "scale": 1.0,
+            "signed": true,
             "offset": 0
           }
         },
         {
-          "codec": "E3Float16",
+          "codec": "O3EInt16",
           "len": 2,
           "id": "L2",
           "args": {
             "scale": 1.0,
+            "signed": true,
             "offset": 0
           }
         },
         {
-          "codec": "E3Float16",
+          "codec": "O3EInt16",
           "len": 2,
           "id": "L3",
           "args": {
             "scale": 1.0,
+            "signed": true,
             "offset": 0
           }
         },
         {
-          "codec": "E3cosPhi",
+          "codec": "O3EcosPhi",
           "len": 2,
           "id": "cosPhi",
           "args": {
@@ -288,13 +294,13 @@
     }
   },
   "598": {
-    "codec": "E3ComplexType",
+    "codec": "O3EComplexType",
     "len": 8,
     "id": "GridVoltage",
     "args": {
       "subTypes": [
         {
-          "codec": "E3Int16",
+          "codec": "O3EInt16",
           "len": 2,
           "id": "L1",
           "args": {
@@ -304,7 +310,7 @@
           }
         },
         {
-          "codec": "E3Int16",
+          "codec": "O3EInt16",
           "len": 2,
           "id": "L2",
           "args": {
@@ -314,7 +320,7 @@
           }
         },
         {
-          "codec": "E3Int16",
+          "codec": "O3EInt16",
           "len": 2,
           "id": "L3",
           "args": {
@@ -324,7 +330,7 @@
           }
         },
         {
-          "codec": "E3Int16",
+          "codec": "O3EInt16",
           "len": 2,
           "id": "Frequency",
           "args": {
@@ -337,13 +343,13 @@
     }
   },
   "599": {
-    "codec": "E3ComplexType",
+    "codec": "O3EComplexType",
     "len": 8,
     "id": "GridVoltage",
     "args": {
       "subTypes": [
         {
-          "codec": "E3Int16",
+          "codec": "O3EInt16",
           "len": 2,
           "id": "L1",
           "args": {
@@ -353,7 +359,7 @@
           }
         },
         {
-          "codec": "E3Int16",
+          "codec": "O3EInt16",
           "len": 2,
           "id": "L2",
           "args": {
@@ -363,7 +369,7 @@
           }
         },
         {
-          "codec": "E3Int16",
+          "codec": "O3EInt16",
           "len": 2,
           "id": "L3",
           "args": {
@@ -373,7 +379,7 @@
           }
         },
         {
-          "codec": "E3Int16",
+          "codec": "O3EInt16",
           "len": 2,
           "id": "Frequency",
           "args": {
@@ -386,13 +392,13 @@
     }
   },
   "600": {
-    "codec": "E3ComplexType",
+    "codec": "O3EComplexType",
     "len": 8,
     "id": "GridEnergy",
     "args": {
       "subTypes": [
         {
-          "codec": "E3Float32",
+          "codec": "O3EFloat32",
           "len": 4,
           "id": "ImportCumulated",
           "args": {
@@ -401,7 +407,7 @@
           }
         },
         {
-          "codec": "E3Float32",
+          "codec": "O3EFloat32",
           "len": 4,
           "id": "ExportCumulated",
           "args": {
@@ -413,13 +419,13 @@
     }
   },
   "601": {
-    "codec": "E3ComplexType",
+    "codec": "O3EComplexType",
     "len": 8,
     "id": "GridEnergy",
     "args": {
       "subTypes": [
         {
-          "codec": "E3Float32",
+          "codec": "O3EFloat32",
           "len": 4,
           "id": "ImportCumulated",
           "args": {
@@ -428,7 +434,7 @@
           }
         },
         {
-          "codec": "E3Float32",
+          "codec": "O3EFloat32",
           "len": 4,
           "id": "ExportCumulated",
           "args": {
@@ -440,13 +446,13 @@
     }
   },
   "602": {
-    "codec": "E3ComplexType",
+    "codec": "O3EComplexType",
     "len": 8,
     "id": "GridPower",
     "args": {
       "subTypes": [
         {
-          "codec": "E3Int32",
+          "codec": "O3EInt32",
           "len": 4,
           "id": "ActivePower",
           "args": {
@@ -456,7 +462,7 @@
           }
         },
         {
-          "codec": "E3Int32",
+          "codec": "O3EInt32",
           "len": 4,
           "id": "ReactivePower",
           "args": {
@@ -469,13 +475,13 @@
     }
   },
   "603": {
-    "codec": "E3ComplexType",
+    "codec": "O3EComplexType",
     "len": 8,
     "id": "GridPower",
     "args": {
       "subTypes": [
         {
-          "codec": "E3Int32",
+          "codec": "O3EInt32",
           "len": 4,
           "id": "ActivePower",
           "args": {
@@ -485,7 +491,7 @@
           }
         },
         {
-          "codec": "E3Int32",
+          "codec": "O3EInt32",
           "len": 4,
           "id": "ReactivePower",
           "args": {
@@ -498,13 +504,13 @@
     }
   },
   "604": {
-    "codec": "E3ComplexType",
+    "codec": "O3EComplexType",
     "len": 4,
     "id": "GridEnergy",
     "args": {
       "subTypes": [
         {
-          "codec": "E3Int32",
+          "codec": "O3EInt32",
           "len": 4,
           "id": "ImportCumulated",
           "args": {
@@ -517,13 +523,13 @@
     }
   },
   "605": {
-    "codec": "E3ComplexType",
+    "codec": "O3EComplexType",
     "len": 4,
     "id": "GridEnergy",
     "args": {
       "subTypes": [
         {
-          "codec": "E3Int32",
+          "codec": "O3EInt32",
           "len": 4,
           "id": "ImportCumulated",
           "args": {

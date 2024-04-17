@@ -19,7 +19,7 @@ import struct
 
 flag_rawmode = True
 
-class E3RawCodec(DidCodec):
+class O3ERawCodec(DidCodec):
     def __init__(self, string_len: int, idStr: str):
         self.string_len = string_len
         self.id = idStr
@@ -35,7 +35,7 @@ class E3RawCodec(DidCodec):
     def __len__(self) -> int:
         return self.string_len
 
-class E3Float16(DidCodec):
+class O3EFloat16(DidCodec):
     def __init__(self, string_len: int, idStr: str, scale: float = 1.0, offset: int = 0):
         self.string_len = string_len
         self.id = idStr
@@ -45,7 +45,7 @@ class E3Float16(DidCodec):
 
     def decode(self, string_bin: bytes) -> Any:
         if(flag_rawmode == True): 
-            return E3RawCodec.decode(self, string_bin)
+            return O3ERawCodec.decode(self, string_bin)
         val = struct.unpack('e', string_bin[self.offset:self.offset+self.string_len])[0]
         return float(val) / self.scale
 
@@ -55,7 +55,7 @@ class E3Float16(DidCodec):
     def __len__(self) -> int:
         return self.string_len
 
-class E3Float32(DidCodec):
+class O3EFloat32(DidCodec):
     def __init__(self, string_len: int, idStr: str, scale: float = 1.0, offset: int = 0):
         self.string_len = string_len
         self.id = idStr
@@ -65,7 +65,7 @@ class E3Float32(DidCodec):
 
     def decode(self, string_bin: bytes) -> Any:
         if(flag_rawmode == True): 
-            return E3RawCodec.decode(self, string_bin)
+            return O3ERawCodec.decode(self, string_bin)
         val = struct.unpack('f', string_bin[self.offset:self.offset+self.string_len])[0]
         return float(val) / self.scale
 
@@ -75,7 +75,7 @@ class E3Float32(DidCodec):
     def __len__(self) -> int:
         return self.string_len
 
-class E3Float64(DidCodec):
+class O3EFloat64(DidCodec):
     def __init__(self, string_len: int, idStr: str, scale: float = 1.0, offset: int = 0):
         self.string_len = string_len
         self.id = idStr
@@ -85,7 +85,7 @@ class E3Float64(DidCodec):
 
     def decode(self, string_bin: bytes) -> Any:
         if(flag_rawmode == True): 
-            return E3RawCodec.decode(self, string_bin)
+            return O3ERawCodec.decode(self, string_bin)
         val = struct.unpack('d', string_bin[self.offset:self.offset+self.string_len])[0]
         return float(val) / self.scale
 
@@ -95,7 +95,7 @@ class E3Float64(DidCodec):
     def __len__(self) -> int:
         return self.string_len
 
-class E3Int(DidCodec):
+class O3EInt(DidCodec):
     def __init__(self, string_len: int, idStr: str, byte_width: int, scale: float = 1.0, offset: int = 0, signed=False):
         self.string_len = string_len
         self.byte_width = byte_width
@@ -107,7 +107,7 @@ class E3Int(DidCodec):
 
     def decode(self, string_bin: bytes) -> Any:
         if(flag_rawmode == True): 
-            return E3RawCodec.decode(self, string_bin)
+            return O3ERawCodec.decode(self, string_bin)
         val = int.from_bytes(string_bin[self.offset:self.offset + self.byte_width], byteorder="little", signed=self.signed)
         return float(val) / self.scale
 
@@ -117,19 +117,19 @@ class E3Int(DidCodec):
     def __len__(self) -> int:
         return self.string_len
 
-class E3Int8(E3Int):
+class O3EInt8(O3EInt):
     def __init__(self, string_len: int, idStr: str, scale: float = 1.0, offset: int = 0, signed=False):
-        E3Int.__init__(self, string_len, idStr, byte_width=1, scale=scale, offset=offset, signed=signed)
+        O3EInt.__init__(self, string_len, idStr, byte_width=1, scale=scale, offset=offset, signed=signed)
 
-class E3Int16(E3Int):
+class O3EInt16(O3EInt):
     def __init__(self, string_len: int, idStr: str, scale: float = 10.0, offset: int = 0, signed=False):
-        E3Int.__init__(self, string_len, idStr, byte_width=2, scale=scale, offset=offset, signed=signed)
+        O3EInt.__init__(self, string_len, idStr, byte_width=2, scale=scale, offset=offset, signed=signed)
 
-class E3Int32(E3Int):
+class O3EInt32(O3EInt):
     def __init__(self, string_len: int, idStr: str, scale: float = 1.0, offset: int = 0, signed=False):
-        E3Int.__init__(self, string_len, idStr, byte_width=4, scale=scale, offset=offset, signed=signed)
+        O3EInt.__init__(self, string_len, idStr, byte_width=4, scale=scale, offset=offset, signed=signed)
 
-class E3cosPhi():
+class O3EcosPhi():
     def __init__(self, string_len: int, idStr: str, scale: float = 1.0, signed: bool = True, offset: int = 0):
         self.string_len = string_len
         self.id = idStr
@@ -140,7 +140,7 @@ class E3cosPhi():
 
     def decode(self, string_bin: bytes) -> Any:
         if (flag_rawmode == True): 
-            return E3RawCodec.decode(self, string_bin)
+            return O3ERawCodec.decode(self, string_bin)
         val = string_bin[1+self.offset]
         if string_bin[self.offset] == 0x04:
             val = -1.0*val
@@ -152,7 +152,7 @@ class E3cosPhi():
     def __len__(self) -> int:
         return self.string_len
 
-class E3ComplexType():
+class O3EComplexType():
     def __init__(self, string_len: int, idStr: str, subTypes : list):
         self.string_len = string_len
         self.id = idStr
@@ -161,7 +161,7 @@ class E3ComplexType():
 
     def decode(self, string_bin: bytes) -> Any:
         if (flag_rawmode == True): 
-            return E3RawCodec.decode(self, string_bin)
+            return O3ERawCodec.decode(self, string_bin)
         result = dict()
         index = 0
         for subType in self.subTypes:
@@ -178,7 +178,7 @@ class E3ComplexType():
     def __len__(self) -> int:
         return self.string_len
 
-class E3StateEM(DidCodec):
+class O3EStateEM(DidCodec):
     def __init__(self, string_len: int, idStr: str, offset: int = 0):
         self.string_len = string_len
         self.id = idStr
@@ -186,7 +186,7 @@ class E3StateEM(DidCodec):
 
     def decode(self, string_bin: bytes) -> Any:
         if(flag_rawmode == True): 
-            return E3RawCodec.decode(self, string_bin)
+            return O3ERawCodec.decode(self, string_bin)
         val = string_bin[self.offset]
         if val == 4:
             return -1
