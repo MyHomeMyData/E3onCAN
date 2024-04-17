@@ -1,0 +1,539 @@
+{
+  "592": {
+    "codec": "E3ComplexType",
+    "len": 8,
+    "id": "GridActivePower",
+    "args": {
+      "subTypes": [
+        {
+          "codec": "E3Int16",
+          "len": 2,
+          "id": "L1",
+          "args": {
+            "scale": 1.0,
+            "signed": true,
+            "offset": 0
+          }
+        },
+        {
+          "codec": "E3Int16",
+          "len": 2,
+          "id": "L2",
+          "args": {
+            "scale": 1.0,
+            "signed": true,
+            "offset": 0
+          }
+        },
+        {
+          "codec": "E3Int16",
+          "len": 2,
+          "id": "L3",
+          "args": {
+            "scale": 1.0,
+            "signed": true,
+            "offset": 0
+          }
+        },
+        {
+          "codec": "E3Int16",
+          "len": 2,
+          "id": "Total",
+          "args": {
+            "scale": 1.0,
+            "signed": true,
+            "offset": 0
+          }
+        }
+      ]
+    }
+  },
+  "593": {
+    "codec": "E3ComplexType",
+    "len": 8,
+    "id": "GridActivePower",
+    "args": {
+      "subTypes": [
+        {
+          "codec": "E3Int16",
+          "len": 2,
+          "id": "L1",
+          "args": {
+            "scale": 1.0,
+            "signed": true,
+            "offset": 0
+          }
+        },
+        {
+          "codec": "E3Int16",
+          "len": 2,
+          "id": "L2",
+          "args": {
+            "scale": 1.0,
+            "signed": true,
+            "offset": 0
+          }
+        },
+        {
+          "codec": "E3Int16",
+          "len": 2,
+          "id": "L3",
+          "args": {
+            "scale": 1.0,
+            "signed": true,
+            "offset": 0
+          }
+        },
+        {
+          "codec": "E3Int16",
+          "len": 2,
+          "id": "Total",
+          "args": {
+            "scale": 1.0,
+            "signed": true,
+            "offset": 0
+          }
+        }
+      ]
+    }
+  },
+  "594": {
+    "codec": "E3ComplexType",
+    "len": 8,
+    "id": "GridReactivePower",
+    "args": {
+      "subTypes": [
+        {
+          "codec": "E3Int16",
+          "len": 2,
+          "id": "L1",
+          "args": {
+            "scale": 1.0,
+            "signed": true,
+            "offset": 0
+          }
+        },
+        {
+          "codec": "E3Int16",
+          "len": 2,
+          "id": "L2",
+          "args": {
+            "scale": 1.0,
+            "signed": true,
+            "offset": 0
+          }
+        },
+        {
+          "codec": "E3Int16",
+          "len": 2,
+          "id": "L3",
+          "args": {
+            "scale": 1.0,
+            "signed": true,
+            "offset": 0
+          }
+        },
+        {
+          "codec": "E3Int16",
+          "len": 2,
+          "id": "Total",
+          "args": {
+            "scale": 1.0,
+            "signed": true,
+            "offset": 0
+          }
+        }
+      ]
+    }
+  },
+  "595": {
+    "codec": "E3ComplexType",
+    "len": 8,
+    "id": "GridReactivePower",
+    "args": {
+      "subTypes": [
+        {
+          "codec": "E3Int16",
+          "len": 2,
+          "id": "L1",
+          "args": {
+            "scale": 1.0,
+            "signed": true,
+            "offset": 0
+          }
+        },
+        {
+          "codec": "E3Int16",
+          "len": 2,
+          "id": "L2",
+          "args": {
+            "scale": 1.0,
+            "signed": true,
+            "offset": 0
+          }
+        },
+        {
+          "codec": "E3Int16",
+          "len": 2,
+          "id": "L3",
+          "args": {
+            "scale": 1.0,
+            "signed": true,
+            "offset": 0
+          }
+        },
+        {
+          "codec": "E3Int16",
+          "len": 2,
+          "id": "Total",
+          "args": {
+            "scale": 1.0,
+            "signed": true,
+            "offset": 0
+          }
+        }
+      ]
+    }
+  },
+  "596": {
+    "codec": "E3ComplexType",
+    "len": 8,
+    "id": "GridCurrent",
+    "args": {
+      "subTypes": [
+        {
+          "codec": "E3Float16",
+          "len": 2,
+          "id": "L1",
+          "args": {
+            "scale": 1.0,
+            "offset": 0
+          }
+        },
+        {
+          "codec": "E3Float16",
+          "len": 2,
+          "id": "L2",
+          "args": {
+            "scale": 1.0,
+            "offset": 0
+          }
+        },
+        {
+          "codec": "E3Float16",
+          "len": 2,
+          "id": "L3",
+          "args": {
+            "scale": 1.0,
+            "offset": 0
+          }
+        },
+        {
+          "codec": "E3cosPhi",
+          "len": 2,
+          "id": "cosPhi",
+          "args": {
+            "scale": 100.0,
+            "signed": true,
+            "offset": 0
+          }
+        }
+      ]
+    }
+  },
+  "597": {
+    "codec": "E3ComplexType",
+    "len": 8,
+    "id": "GridCurrent",
+    "args": {
+      "subTypes": [
+        {
+          "codec": "E3Float16",
+          "len": 2,
+          "id": "L1",
+          "args": {
+            "scale": 1.0,
+            "offset": 0
+          }
+        },
+        {
+          "codec": "E3Float16",
+          "len": 2,
+          "id": "L2",
+          "args": {
+            "scale": 1.0,
+            "offset": 0
+          }
+        },
+        {
+          "codec": "E3Float16",
+          "len": 2,
+          "id": "L3",
+          "args": {
+            "scale": 1.0,
+            "offset": 0
+          }
+        },
+        {
+          "codec": "E3cosPhi",
+          "len": 2,
+          "id": "cosPhi",
+          "args": {
+            "scale": 100.0,
+            "signed": true,
+            "offset": 0
+          }
+        }
+      ]
+    }
+  },
+  "598": {
+    "codec": "E3ComplexType",
+    "len": 8,
+    "id": "GridVoltage",
+    "args": {
+      "subTypes": [
+        {
+          "codec": "E3Int16",
+          "len": 2,
+          "id": "L1",
+          "args": {
+            "scale": 1.0,
+            "signed": false,
+            "offset": 0
+          }
+        },
+        {
+          "codec": "E3Int16",
+          "len": 2,
+          "id": "L2",
+          "args": {
+            "scale": 1.0,
+            "signed": false,
+            "offset": 0
+          }
+        },
+        {
+          "codec": "E3Int16",
+          "len": 2,
+          "id": "L3",
+          "args": {
+            "scale": 1.0,
+            "signed": false,
+            "offset": 0
+          }
+        },
+        {
+          "codec": "E3Int16",
+          "len": 2,
+          "id": "Frequency",
+          "args": {
+            "scale": 100.0,
+            "signed": false,
+            "offset": 0
+          }
+        }
+      ]
+    }
+  },
+  "599": {
+    "codec": "E3ComplexType",
+    "len": 8,
+    "id": "GridVoltage",
+    "args": {
+      "subTypes": [
+        {
+          "codec": "E3Int16",
+          "len": 2,
+          "id": "L1",
+          "args": {
+            "scale": 1.0,
+            "signed": false,
+            "offset": 0
+          }
+        },
+        {
+          "codec": "E3Int16",
+          "len": 2,
+          "id": "L2",
+          "args": {
+            "scale": 1.0,
+            "signed": false,
+            "offset": 0
+          }
+        },
+        {
+          "codec": "E3Int16",
+          "len": 2,
+          "id": "L3",
+          "args": {
+            "scale": 1.0,
+            "signed": false,
+            "offset": 0
+          }
+        },
+        {
+          "codec": "E3Int16",
+          "len": 2,
+          "id": "Frequency",
+          "args": {
+            "scale": 100.0,
+            "signed": false,
+            "offset": 0
+          }
+        }
+      ]
+    }
+  },
+  "600": {
+    "codec": "E3ComplexType",
+    "len": 8,
+    "id": "GridEnergy",
+    "args": {
+      "subTypes": [
+        {
+          "codec": "E3Float32",
+          "len": 4,
+          "id": "ImportCumulated",
+          "args": {
+            "scale": 1000.0,
+            "offset": 0
+          }
+        },
+        {
+          "codec": "E3Float32",
+          "len": 4,
+          "id": "ExportCumulated",
+          "args": {
+            "scale": 1000.0,
+            "offset": 0
+          }
+        }
+      ]
+    }
+  },
+  "601": {
+    "codec": "E3ComplexType",
+    "len": 8,
+    "id": "GridEnergy",
+    "args": {
+      "subTypes": [
+        {
+          "codec": "E3Float32",
+          "len": 4,
+          "id": "ImportCumulated",
+          "args": {
+            "scale": 1000.0,
+            "offset": 0
+          }
+        },
+        {
+          "codec": "E3Float32",
+          "len": 4,
+          "id": "ExportCumulated",
+          "args": {
+            "scale": 1000.0,
+            "offset": 0
+          }
+        }
+      ]
+    }
+  },
+  "602": {
+    "codec": "E3ComplexType",
+    "len": 8,
+    "id": "GridPower",
+    "args": {
+      "subTypes": [
+        {
+          "codec": "E3Int32",
+          "len": 4,
+          "id": "ActivePower",
+          "args": {
+            "scale": 10.0,
+            "signed": true,
+            "offset": 0
+          }
+        },
+        {
+          "codec": "E3Int32",
+          "len": 4,
+          "id": "ReactivePower",
+          "args": {
+            "scale": 10.0,
+            "signed": true,
+            "offset": 0
+          }
+        }
+      ]
+    }
+  },
+  "603": {
+    "codec": "E3ComplexType",
+    "len": 8,
+    "id": "GridPower",
+    "args": {
+      "subTypes": [
+        {
+          "codec": "E3Int32",
+          "len": 4,
+          "id": "ActivePower",
+          "args": {
+            "scale": 10.0,
+            "signed": true,
+            "offset": 0
+          }
+        },
+        {
+          "codec": "E3Int32",
+          "len": 4,
+          "id": "ReactivePower",
+          "args": {
+            "scale": 10.0,
+            "signed": true,
+            "offset": 0
+          }
+        }
+      ]
+    }
+  },
+  "604": {
+    "codec": "E3ComplexType",
+    "len": 4,
+    "id": "GridEnergy",
+    "args": {
+      "subTypes": [
+        {
+          "codec": "E3Int32",
+          "len": 4,
+          "id": "ImportCumulated",
+          "args": {
+            "scale": 100,
+            "signed": false,
+            "offset": 0
+          }
+        }
+      ]
+    }
+  },
+  "605": {
+    "codec": "E3ComplexType",
+    "len": 4,
+    "id": "GridEnergy",
+    "args": {
+      "subTypes": [
+        {
+          "codec": "E3Int32",
+          "len": 4,
+          "id": "ImportCumulated",
+          "args": {
+            "scale": 100,
+            "signed": false,
+            "offset": 0
+          }
+        }
+      ]
+    }
+  },
+  "Version": "20240417"
+}

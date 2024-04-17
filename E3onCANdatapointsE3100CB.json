@@ -1,0 +1,330 @@
+{
+  "1385.1": {
+    "codec": "E3ComplexType",
+    "len": 4,
+    "id": "GridEnergy",
+    "args": {
+      "subTypes": [
+        {
+          "codec": "E3Float32",
+          "len": 4,
+          "id": "ImportCumulated",
+          "args": {
+            "scale": 1000.0,
+            "offset": 0
+          }
+        }
+      ]
+    }
+  },
+  "1385.2": {
+    "codec": "E3ComplexType",
+    "len": 4,
+    "id": "GridEnergy",
+    "args": {
+      "subTypes": [
+        {
+          "codec": "E3Float32",
+          "len": 4,
+          "id": "ExportCumulated",
+          "args": {
+            "scale": 1000.0,
+            "offset": 0
+          }
+        }
+      ]
+    }
+  },
+  "1385.3": {
+    "codec": "E3ComplexType",
+    "len": 1,
+    "id": "GridState",
+    "args": {
+      "subTypes": [
+        {
+          "codec": "E3StateEM",
+          "len": 1,
+          "id": "OperationState",
+          "args": {
+            "offset": 0
+          }
+        }
+      ]
+    }
+  },
+  "1385.4": {
+    "codec": "E3ComplexType",
+    "len": 4,
+    "id": "GridActivePower",
+    "args": {
+      "subTypes": [
+        {
+          "codec": "E3Int16",
+          "len": 2,
+          "id": "Total",
+          "args": {
+            "scale": 1.0,
+            "signed": true,
+            "offset": 0
+          }
+        }
+      ]
+    }
+  },
+  "1385.5": {
+    "codec": "E3ComplexType",
+    "len": 4,
+    "id": "Unkown_1385_05",
+    "args": {
+      "subTypes": [
+        {
+          "codec": "E3Float16",
+          "len": 2,
+          "id": "Unknown_0",
+          "args": {
+            "scale": 1.0,
+            "offset": 0
+          }
+        },
+        {
+          "codec": "E3Float16",
+          "len": 2,
+          "id": "Unknown_1",
+          "args": {
+            "scale": 1.0,
+            "offset": 0
+          }
+        }
+      ]
+    }
+  },
+  "1385.6": {
+    "codec": "E3ComplexType",
+    "len": 2,
+    "id": "GridCurrent",
+    "args": {
+      "subTypes": [
+        {
+          "codec": "E3Int16",
+          "len": 2,
+          "id": "L1",
+          "args": {
+            "scale": 1.0,
+            "signed": true,
+            "offset": 0
+          }
+        }
+      ]
+    }
+  },
+  "1385.7": {
+    "codec": "E3ComplexType",
+    "len": 4,
+    "id": "GridVoltage",
+    "args": {
+      "subTypes": [
+        {
+          "codec": "E3Int32",
+          "len": 4,
+          "id": "L1",
+          "args": {
+            "scale": 1.0,
+            "signed": false,
+            "offset": 0
+          }
+        }
+      ]
+    }
+  },
+  "1385.8": {
+    "codec": "E3ComplexType",
+    "len": 4,
+    "id": "GridActivePower",
+    "args": {
+      "subTypes": [
+        {
+          "codec": "E3Int16",
+          "len": 2,
+          "id": "L1",
+          "args": {
+            "scale": 1.0,
+            "signed": true,
+            "offset": 0
+          }
+        }
+      ]
+    }
+  },
+  "1385.9": {
+    "codec": "E3ComplexType",
+    "len": 4,
+    "id": "GridReactivePower",
+    "args": {
+      "subTypes": [
+        {
+          "codec": "E3Int16",
+          "len": 2,
+          "id": "L1",
+          "args": {
+            "scale": 1.0,
+            "signed": true,
+            "offset": 0
+          }
+        }
+      ]
+    }
+  },
+  "1385.10": {
+    "codec": "E3ComplexType",
+    "len": 2,
+    "id": "GridCurrent",
+    "args": {
+      "subTypes": [
+        {
+          "codec": "E3Int16",
+          "len": 2,
+          "id": "L2",
+          "args": {
+            "scale": 1.0,
+            "signed": true,
+            "offset": 0
+          }
+        }
+      ]
+    }
+  },
+  "1385.11": {
+    "codec": "E3ComplexType",
+    "len": 4,
+    "id": "GridVoltage",
+    "args": {
+      "subTypes": [
+        {
+          "codec": "E3Int32",
+          "len": 4,
+          "id": "L2",
+          "args": {
+            "scale": 1.0,
+            "signed": false,
+            "offset": 0
+          }
+        }
+      ]
+    }
+  },
+  "1385.12": {
+    "codec": "E3ComplexType",
+    "len": 4,
+    "id": "GridActivePower",
+    "args": {
+      "subTypes": [
+        {
+          "codec": "E3Int16",
+          "len": 2,
+          "id": "L2",
+          "args": {
+            "scale": 1.0,
+            "signed": true,
+            "offset": 0
+          }
+        }
+      ]
+    }
+  },
+  "1385.13": {
+    "codec": "E3ComplexType",
+    "len": 4,
+    "id": "GridReactivePower",
+    "args": {
+      "subTypes": [
+        {
+          "codec": "E3Int16",
+          "len": 2,
+          "id": "L2",
+          "args": {
+            "scale": 1.0,
+            "signed": true,
+            "offset": 0
+          }
+        }
+      ]
+    }
+  },
+  "1385.14": {
+    "codec": "E3ComplexType",
+    "len": 2,
+    "id": "GridCurrent",
+    "args": {
+      "subTypes": [
+        {
+          "codec": "E3Int16",
+          "len": 2,
+          "id": "L3",
+          "args": {
+            "scale": 1.0,
+            "signed": true,
+            "offset": 0
+          }
+        }
+      ]
+    }
+  },
+  "1385.15": {
+    "codec": "E3ComplexType",
+    "len": 4,
+    "id": "GridVoltage",
+    "args": {
+      "subTypes": [
+        {
+          "codec": "E3Int32",
+          "len": 4,
+          "id": "L3",
+          "args": {
+            "scale": 1.0,
+            "signed": false,
+            "offset": 0
+          }
+        }
+      ]
+    }
+  },
+  "1385.16": {
+    "codec": "E3ComplexType",
+    "len": 4,
+    "id": "GridActivePower",
+    "args": {
+      "subTypes": [
+        {
+          "codec": "E3Int16",
+          "len": 2,
+          "id": "L3",
+          "args": {
+            "scale": 1.0,
+            "signed": true,
+            "offset": 0
+          }
+        }
+      ]
+    }
+  },
+  "1385.17": {
+    "codec": "E3ComplexType",
+    "len": 4,
+    "id": "GridReactivePower",
+    "args": {
+      "subTypes": [
+        {
+          "codec": "E3Int16",
+          "len": 2,
+          "id": "L3",
+          "args": {
+            "scale": 1.0,
+            "signed": true,
+            "offset": 0
+          }
+        }
+      ]
+    }
+  },
+  "Version": "20240417"
+}

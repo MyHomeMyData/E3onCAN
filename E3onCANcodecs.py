@@ -29,6 +29,9 @@ class E3RawCodec(DidCodec):
         string_ascii = string_bin.hex()
         return string_ascii
 
+    def getCodecInfo(self):
+        return ({"codec": self.__class__.__name__, "len": self.string_len, "id": self.id, "args": {}})
+
     def __len__(self) -> int:
         return self.string_len
 
@@ -45,6 +48,9 @@ class E3Float16(DidCodec):
             return E3RawCodec.decode(self, string_bin)
         val = struct.unpack('e', string_bin[self.offset:self.offset+self.string_len])[0]
         return float(val) / self.scale
+
+    def getCodecInfo(self):
+        return ({"codec": self.__class__.__name__, "len": self.string_len, "id": self.id, "args": {"scale":self.scale, "offset":self.offset}})
 
     def __len__(self) -> int:
         return self.string_len
@@ -63,6 +69,9 @@ class E3Float32(DidCodec):
         val = struct.unpack('f', string_bin[self.offset:self.offset+self.string_len])[0]
         return float(val) / self.scale
 
+    def getCodecInfo(self):
+        return ({"codec": self.__class__.__name__, "len": self.string_len, "id": self.id, "args": {"scale":self.scale, "offset":self.offset}})
+
     def __len__(self) -> int:
         return self.string_len
 
@@ -79,6 +88,9 @@ class E3Float64(DidCodec):
             return E3RawCodec.decode(self, string_bin)
         val = struct.unpack('d', string_bin[self.offset:self.offset+self.string_len])[0]
         return float(val) / self.scale
+
+    def getCodecInfo(self):
+        return ({"codec": self.__class__.__name__, "len": self.string_len, "id": self.id, "args": {"scale":self.scale, "offset":self.offset}})
 
     def __len__(self) -> int:
         return self.string_len
@@ -98,6 +110,9 @@ class E3Int(DidCodec):
             return E3RawCodec.decode(self, string_bin)
         val = int.from_bytes(string_bin[self.offset:self.offset + self.byte_width], byteorder="little", signed=self.signed)
         return float(val) / self.scale
+
+    def getCodecInfo(self):
+        return ({"codec": self.__class__.__name__, "len": self.string_len, "id": self.id, "args": {"scale":self.scale, "signed":self.signed, "offset":self.offset}})
 
     def __len__(self) -> int:
         return self.string_len
@@ -131,6 +146,9 @@ class E3cosPhi():
             val = -1.0*val
         return val/self.scale
 
+    def getCodecInfo(self):
+        return ({"codec": self.__class__.__name__, "len": self.string_len, "id": self.id, "args": {"scale":self.scale, "signed":self.signed, "offset":self.offset}})
+
     def __len__(self) -> int:
         return self.string_len
 
@@ -151,6 +169,12 @@ class E3ComplexType():
             index+=subType.string_len
         return dict(result)
     
+    def getCodecInfo(self):
+        argsSubTypes = []
+        for subType in self.subTypes:
+            argsSubTypes.append(subType.getCodecInfo())
+        return ({"codec": self.__class__.__name__, "len": self.string_len, "id": self.id, "args": {"subTypes":argsSubTypes}})
+
     def __len__(self) -> int:
         return self.string_len
 
@@ -169,6 +193,9 @@ class E3StateEM(DidCodec):
         if val == 0:
             return 1
         return 0
+
+    def getCodecInfo(self):
+        return ({"codec": self.__class__.__name__, "len": self.string_len, "id": self.id, "args": {"offset":self.offset}})
 
     def __len__(self) -> int:
         return self.string_len
