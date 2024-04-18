@@ -204,7 +204,7 @@
         {
           "codec": "O3EInt16",
           "len": 2,
-          "id": "L1",
+          "id": "Absolute L1",
           "args": {
             "scale": 1.0,
             "signed": true,
@@ -214,7 +214,7 @@
         {
           "codec": "O3EInt16",
           "len": 2,
-          "id": "L2",
+          "id": "Absolute L2",
           "args": {
             "scale": 1.0,
             "signed": true,
@@ -224,7 +224,7 @@
         {
           "codec": "O3EInt16",
           "len": 2,
-          "id": "L3",
+          "id": "Absolute L3",
           "args": {
             "scale": 1.0,
             "signed": true,
@@ -253,7 +253,7 @@
         {
           "codec": "O3EInt16",
           "len": 2,
-          "id": "L1",
+          "id": "Absolute L1",
           "args": {
             "scale": 1.0,
             "signed": true,
@@ -263,7 +263,7 @@
         {
           "codec": "O3EInt16",
           "len": 2,
-          "id": "L2",
+          "id": "Absolute L2",
           "args": {
             "scale": 1.0,
             "signed": true,
@@ -273,7 +273,7 @@
         {
           "codec": "O3EInt16",
           "len": 2,
-          "id": "L3",
+          "id": "Absolute L3",
           "args": {
             "scale": 1.0,
             "signed": true,
@@ -505,7 +505,7 @@
   },
   "604": {
     "codec": "O3EComplexType",
-    "len": 4,
+    "len": 8,
     "id": "GridEnergy",
     "args": {
       "subTypes": [
@@ -515,6 +515,16 @@
           "id": "ImportCumulated",
           "args": {
             "scale": 100,
+            "signed": false,
+            "offset": 0
+          }
+        },
+        {
+          "codec": "O3EInt32",
+          "len": 4,
+          "id": "Unknown",
+          "args": {
+            "scale": 1,
             "signed": false,
             "offset": 0
           }
@@ -524,7 +534,7 @@
   },
   "605": {
     "codec": "O3EComplexType",
-    "len": 4,
+    "len": 8,
     "id": "GridEnergy",
     "args": {
       "subTypes": [
@@ -537,9 +547,19 @@
             "signed": false,
             "offset": 0
           }
+        },
+        {
+          "codec": "O3EInt32",
+          "len": 4,
+          "id": "Unknown",
+          "args": {
+            "scale": 1,
+            "signed": false,
+            "offset": 0
+          }
         }
       ]
     }
   },
-  "Version": "20240417"
+  "Version": "20240418"
 }

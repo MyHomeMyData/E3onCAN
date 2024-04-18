@@ -74,24 +74,16 @@
   "1385.5": {
     "codec": "O3EComplexType",
     "len": 4,
-    "id": "Unkown_1385_05",
+    "id": "GridReactivePower",
     "args": {
       "subTypes": [
         {
-          "codec": "O3EFloat16",
+          "codec": "O3EInt16",
           "len": 2,
-          "id": "Unknown_0",
+          "id": "Total",
           "args": {
             "scale": 1.0,
-            "offset": 0
-          }
-        },
-        {
-          "codec": "O3EFloat16",
-          "len": 2,
-          "id": "Unknown_1",
-          "args": {
-            "scale": 1.0,
+            "signed": true,
             "offset": 0
           }
         }
@@ -107,7 +99,7 @@
         {
           "codec": "O3EInt16",
           "len": 2,
-          "id": "L1",
+          "id": "Absolute L1",
           "args": {
             "scale": 1.0,
             "signed": true,
@@ -183,7 +175,7 @@
         {
           "codec": "O3EInt16",
           "len": 2,
-          "id": "L2",
+          "id": "Absolute L2",
           "args": {
             "scale": 1.0,
             "signed": true,
@@ -259,7 +251,7 @@
         {
           "codec": "O3EInt16",
           "len": 2,
-          "id": "L3",
+          "id": "Absolute L3",
           "args": {
             "scale": 1.0,
             "signed": true,
@@ -326,5 +318,5 @@
       ]
     }
   },
-  "Version": "20240417"
+  "Version": "20240418"
 }
