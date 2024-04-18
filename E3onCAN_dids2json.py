@@ -16,7 +16,7 @@ def dids2json(ids, fname, ver):
     didsDict = {}
 
     for dp in ids:
-        didsDict[dp] = ids[dp].getCodecInfo()
+        didsDict[str(dp).replace('.','_')] = ids[dp].getCodecInfo()
         cntDps += 1
 
     didsDict['Version'] = ver

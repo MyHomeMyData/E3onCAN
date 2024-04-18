@@ -116,7 +116,9 @@ def evalMessages(bus, device, args):
         elif args.dev == 'e3100cb' and len(msg.data) == 8:
             # e3100cb sends 8 bytes of data w/o any protocol
             # did = CAN id plus databyte 3
-            did = str(id)+'.'+str(msg.data[3])
+            D3str = '00'+str(msg.data[3])
+            D3str = D3str[-2:]
+            did = str(id)+'.'+D3str
             if (dids == None) or (did in dids):
                 decodeData(device,id,msg.timestamp,did,msg.data[4:])    # Ignore bytes 0 to 3
         else:

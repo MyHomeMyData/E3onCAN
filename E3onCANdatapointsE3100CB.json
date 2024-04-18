@@ -1,5 +1,5 @@
 {
-  "1385.1": {
+  "1385_01": {
     "codec": "O3EComplexType",
     "len": 4,
     "id": "GridEnergy",
@@ -17,7 +17,7 @@
       ]
     }
   },
-  "1385.2": {
+  "1385_02": {
     "codec": "O3EComplexType",
     "len": 4,
     "id": "GridEnergy",
@@ -35,9 +35,9 @@
       ]
     }
   },
-  "1385.3": {
+  "1385_03": {
     "codec": "O3EComplexType",
-    "len": 1,
+    "len": 4,
     "id": "GridState",
     "args": {
       "subTypes": [
@@ -52,7 +52,7 @@
       ]
     }
   },
-  "1385.4": {
+  "1385_04": {
     "codec": "O3EComplexType",
     "len": 4,
     "id": "GridActivePower",
@@ -71,7 +71,7 @@
       ]
     }
   },
-  "1385.5": {
+  "1385_05": {
     "codec": "O3EComplexType",
     "len": 4,
     "id": "GridReactivePower",
@@ -90,9 +90,9 @@
       ]
     }
   },
-  "1385.6": {
+  "1385_06": {
     "codec": "O3EComplexType",
-    "len": 2,
+    "len": 4,
     "id": "GridCurrent",
     "args": {
       "subTypes": [
@@ -109,7 +109,7 @@
       ]
     }
   },
-  "1385.7": {
+  "1385_07": {
     "codec": "O3EComplexType",
     "len": 4,
     "id": "GridVoltage",
@@ -128,7 +128,7 @@
       ]
     }
   },
-  "1385.8": {
+  "1385_08": {
     "codec": "O3EComplexType",
     "len": 4,
     "id": "GridActivePower",
@@ -147,7 +147,7 @@
       ]
     }
   },
-  "1385.9": {
+  "1385_09": {
     "codec": "O3EComplexType",
     "len": 4,
     "id": "GridReactivePower",
@@ -166,9 +166,9 @@
       ]
     }
   },
-  "1385.10": {
+  "1385_10": {
     "codec": "O3EComplexType",
-    "len": 2,
+    "len": 4,
     "id": "GridCurrent",
     "args": {
       "subTypes": [
@@ -185,7 +185,7 @@
       ]
     }
   },
-  "1385.11": {
+  "1385_11": {
     "codec": "O3EComplexType",
     "len": 4,
     "id": "GridVoltage",
@@ -204,7 +204,7 @@
       ]
     }
   },
-  "1385.12": {
+  "1385_12": {
     "codec": "O3EComplexType",
     "len": 4,
     "id": "GridActivePower",
@@ -223,7 +223,7 @@
       ]
     }
   },
-  "1385.13": {
+  "1385_13": {
     "codec": "O3EComplexType",
     "len": 4,
     "id": "GridReactivePower",
@@ -242,9 +242,9 @@
       ]
     }
   },
-  "1385.14": {
+  "1385_14": {
     "codec": "O3EComplexType",
-    "len": 2,
+    "len": 4,
     "id": "GridCurrent",
     "args": {
       "subTypes": [
@@ -261,7 +261,7 @@
       ]
     }
   },
-  "1385.15": {
+  "1385_15": {
     "codec": "O3EComplexType",
     "len": 4,
     "id": "GridVoltage",
@@ -280,7 +280,7 @@
       ]
     }
   },
-  "1385.16": {
+  "1385_16": {
     "codec": "O3EComplexType",
     "len": 4,
     "id": "GridActivePower",
@@ -299,7 +299,7 @@
       ]
     }
   },
-  "1385.17": {
+  "1385_17": {
     "codec": "O3EComplexType",
     "len": 4,
     "id": "GridReactivePower",
