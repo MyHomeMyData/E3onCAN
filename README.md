@@ -1,11 +1,11 @@
 # E3onCAN
 * Grab live data on CAN bus of Viessmann E3 series, e.g. Vitocharge VX3, Vitocal 250
 * Grab live data on CAN bus of Viessmann energy meter E380 CA (up to two devices)
-* Grab live data on CAN bus of Viessmann energy meter E3100CB (experimental)
+* Grab live data on CAN bus of Viessmann energy meter E3100CB
 * Only read operations are done on CAN bus. No write operations are possible.
 * Decode raw data to physical units for many data points
 * Optionally send data via MQTT
-* Tested so far on external CAN bus of Vitocal 250 connected to Vitocharge VX3, for E380 and for E3100CB (only roughly tested)
+* Tested so far on external CAN bus of Vitocal 250 connected to Vitocharge VX3, for E380 and for E3100CB
 * Processing of candumps instead of live data possible
 * Based on open3e, see https://github.com/abnoname/open3e.git 
 
