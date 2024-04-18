@@ -91,10 +91,10 @@ CAN-address=98: data points with odd IDs
 | 1385.8  | Active Power L1 |  W |
 | 1385.12  | Active Power L2 |  W |
 | 1385.16  | Active Power L3 |  W |
-| 1385.5  | Active Power Total |  var |
-| 1385.9  | Reactive Power L1 |  var |
-| 1385.13  | Reactive Power L2 |  var |
-| 1385.17  | Reactive Power L3 |  var |
+| 1385.5  | Reactive Power Total | var |
+| 1385.9  | Reactive Power L1 | var |
+| 1385.13  | Reactive Power L2 | var |
+| 1385.17  | Reactive Power L3 | var |
 | 1385.6 | Current, Absolute L1 | A |
 | 1385.10 | Current, Absolute L2 | A |
 | 1385.14 | Current, Absolute L3 | A |
