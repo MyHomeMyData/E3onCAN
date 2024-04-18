@@ -84,21 +84,21 @@ CAN-address=98: data points with odd IDs
 
 | ID | Data| Unit |
 | ------|:--- |------|
-| 1385.1  | Cumulated Import | kWh |
-| 1385.2  | Cumulated Export | kWh |
-| 1385.3  | State: -1 => feedin \| +1 => supply | |
-| 1385.4  | Active Power Total |  W |
-| 1385.8  | Active Power L1 |  W |
-| 1385.12  | Active Power L2 |  W |
-| 1385.16  | Active Power L3 |  W |
-| 1385.5  | Reactive Power Total | var |
-| 1385.9  | Reactive Power L1 | var |
-| 1385.13  | Reactive Power L2 | var |
-| 1385.17  | Reactive Power L3 | var |
-| 1385.6 | Current, Absolute L1 | A |
+| 1385.01 | Cumulated Import | kWh |
+| 1385.02 | Cumulated Export | kWh |
+| 1385.03 | State: -1 => feedin \| +1 => supply | |
+| 1385.04 | Active Power Total |  W |
+| 1385.08 | Active Power L1 |  W |
+| 1385.12 | Active Power L2 |  W |
+| 1385.16 | Active Power L3 |  W |
+| 1385.05 | Reactive Power Total | var |
+| 1385.09 | Reactive Power L1 | var |
+| 1385.13 | Reactive Power L2 | var |
+| 1385.17 | Reactive Power L3 | var |
+| 1385.06 | Current, Absolute L1 | A |
 | 1385.10 | Current, Absolute L2 | A |
 | 1385.14 | Current, Absolute L3 | A |
-| 1385.7 | Voltage, L1 | V |
+| 1385.07 | Voltage, L1 | V |
 | 1385.11 | Voltage, L2 | V |
 | 1385.15 | Voltage, L3 | V |
 
