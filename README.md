@@ -120,7 +120,7 @@ CAN-address=98: data points with odd IDs
 -->
 
 ### 0.3.1 (2024-04-20)
-* (MyHomeMyData) Structure of ID 1690 (ElectricalEnergySystemPhotovoltaicStatus) changed based on issue #1
+* (MyHomeMyData) Structure of ID 1690 (ElectricalEnergySystemPhotovoltaicStatus) changed based on issue #6
 
 ### 0.3.0 (2024-04-18)
 * (MyHomeMyData) Main change for id 0x258/0x259 (GridEnergy): Now using correct data format. Many thanks to @M4n197 for unveiling the right data format.
