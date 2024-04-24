@@ -35,6 +35,8 @@ from Open3Ecodecs import *
 import E3onCANcodecs
 from E3onCANcodecs import *
 
+tsNextDecoding = {}
+
 def decodeData(device, canid, ts, did, databytes):
     def mqttdump(topic, obj, set_retain):
         if (type(obj)==dict):
@@ -46,54 +48,60 @@ def decodeData(device, canid, ts, did, databytes):
         else:
             ret = client_mqtt.publish(topic, str(obj), retain=set_retain)                  
 
-    if did in dataIdentifiers:
-        try:
-            topicPf = ''    # clear topic Prefix
-            didNAME = dataIdentifiers[did].id
-            values  = dataIdentifiers[did].decode(databytes)
-        except Exception as e:
-            # Exception while decoding
+    didStr = str(did)
+    tsNow = int(datetime.datetime.now().timestamp()*1000)
+    if not didStr in tsNextDecoding:
+        tsNextDecoding[didStr] = 0
+    if tsGap == 0 or tsNow >= tsNextDecoding[didStr]:
+        tsNextDecoding[didStr] = tsNow + tsGap
+        if did in dataIdentifiers:
+            try:
+                topicPf = ''    # clear topic Prefix
+                didNAME = dataIdentifiers[did].id
+                values  = dataIdentifiers[did].decode(databytes)
+            except Exception as e:
+                # Exception while decoding
+                topicPf = "$"   # set topic Prefix
+                values = {
+                            "Error": "Exception: "+str(e),
+                            "Did": did,
+                            "Raw": databytes.hex()
+                        }
+        else:
+            # No codec available for this did
             topicPf = "$"   # set topic Prefix
+            didNAME = "Unknown"
             values = {
-                        "Error": "Exception: "+str(e),
+                        "Error": "No codec found for did",
                         "Did": did,
                         "Raw": databytes.hex()
-                     }
-    else:
-        # No codec available for this did
-        topicPf = "$"   # set topic Prefix
-        didNAME = "Unknown"
-        values = {
-                    "Error": "No codec found for did",
-                    "Did": did,
-                    "Raw": databytes.hex()
-                 }
+                    }
 
-    if (args.mqtt != None):
-        topicStr = topicPf + mqttformatstring.format(
-            device = device,
-            didName = didNAME,
-            didNumber = did
-        )
-        set_retain = (retainall == True) or (did in retaindids)
+        if (args.mqtt != None):
+            topicStr = topicPf + mqttformatstring.format(
+                device = device,
+                didName = didNAME,
+                didNumber = did
+            )
+            set_retain = (retainall == True) or (did in retaindids)
 
-        if (args.json == True): 
-            # Send one JSON message 
-            ret = client_mqtt.publish(mqttParamas[2] + "/" + topicStr, json.dumps(values))    
-        else:
-            # Split down to scalar types
-            mqttdump(mqttParamas[2] + "/" + topicStr, values, set_retain)
-        if (args.verbose == True):
-            print(str(did)+' '+didNAME+': '+json.dumps(values))
-    else:
-        if (args.verbose == True):
-            if ts > 0:
-                dt_str = str(datetime.datetime.fromtimestamp(ts))+' '
+            if (args.json == True): 
+                # Send one JSON message 
+                ret = client_mqtt.publish(mqttParamas[2] + "/" + topicStr, json.dumps(values))    
             else:
-                dt_str = ''
-            print(dt_str+str(did)+' '+didNAME+': '+json.dumps(values))
+                # Split down to scalar types
+                mqttdump(mqttParamas[2] + "/" + topicStr, values, set_retain)
+            if (args.verbose == True):
+                print(str(did)+' '+didNAME+': '+json.dumps(values))
         else:
-            print(didNAME+': '+json.dumps(values))
+            if (args.verbose == True):
+                if ts > 0:
+                    dt_str = str(datetime.datetime.fromtimestamp(ts))+' '
+                else:
+                    dt_str = ''
+                print(dt_str+str(did)+' '+didNAME+': '+json.dumps(values))
+            else:
+                print(didNAME+': '+json.dumps(values))
 
 def evalMessages(bus, device, args):
     data = {
@@ -173,6 +181,7 @@ parser.add_argument("-dev", "--dev", type=str, help="device type --dev vcal or -
 parser.add_argument("-canid", "--canid", type=str, help="CAN id to listen to --canid 0x451, overrides CAN id selected by device")
 parser.add_argument("-r", "--read", type=str, help="read did, e.g. 0x173,0x174")
 parser.add_argument("-raw", "--raw", action='store_true', help="return raw data for all dids")
+parser.add_argument("-g", "--gap", type=str, help="minimum time gap (seconds) between decoding of specific dids. Default: immediate decoding.")
 parser.add_argument("-m", "--mqtt", type=str, help="publish to server, e.g. 192.168.0.1:1883:topicname")
 parser.add_argument("-mfstr", "--mqttformatstring", type=str, help="mqtt formatstring e.g. {didNumber}_{didName}")
 parser.add_argument("-muser", "--mqttuser", type=str, help="mqtt username")
@@ -285,6 +294,11 @@ elif (args.file != None):
     channel = args.file
 else:
     channel = 'can0'
+
+if args.gap != None:
+    tsGap = int(eval(args.gap) * 1000)
+else:
+    tsGap = 0
 
 retainall = args.retainall
 retaindids = []

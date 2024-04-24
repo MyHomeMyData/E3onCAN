@@ -26,6 +26,8 @@
                           CAN ID to listen to, e.g. -canid 0x451, overrides CAN ID selected by device
     -r READ, --read READ  read did, e.g. 1690,1834
     -raw, --raw           return raw data for all dids
+    -g, --gap             minimum time gap (seconds) between decoding of specific dids.
+                          Default: 0 => immediate decoding.
     -m MQTT, --mqtt MQTT  publish to server, e.g. localhost:1883:topicname
     -mfstr MQTTFORMATSTRING, --mqttformatstring MQTTFORMATSTRING
                           mqtt formatstring e.g. {device}_{didNumber:04d}_{didName}
@@ -118,6 +120,9 @@ CAN-address=98: data points with odd IDs
     Placeholder for the next version (at the beginning of the line):
     ### **WORK IN PROGRESS**
 -->
+
+### 0.4.0 (2024-04-24)
+* (MyHomeMyData) Added -g option to specify minimum time gap between decodings
 
 ### 0.3.1 (2024-04-20)
 * (MyHomeMyData) Structure of ID 1690 (ElectricalEnergySystemPhotovoltaicStatus) changed based on issue #6
