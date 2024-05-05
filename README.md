@@ -123,6 +123,8 @@ CAN-address=98: data points with odd IDs
 
 ### 0.4.0 (2024-04-24)
 * (MyHomeMyData) Added -g option to specify minimum time gap between decodings
+* (MyHomeMyData) Updated list of data points to version 20240505
+* (MyHomeMyData) Added info for data points 2404_BivalenceControlMode and 2831_BivalenceControlAlternativeTemperature
 
 ### 0.3.1 (2024-04-20)
 * (MyHomeMyData) Structure of ID 1690 (ElectricalEnergySystemPhotovoltaicStatus) changed based on issue #6
