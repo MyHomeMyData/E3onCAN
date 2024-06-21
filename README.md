@@ -7,7 +7,8 @@
 * Optionally send data via MQTT
 * Tested so far on external CAN bus of Vitocal 250 connected to Vitocharge VX3, for E380 and for E3100CB
 * Processing of candumps instead of live data possible
-* Based on open3e, see https://github.com/abnoname/open3e.git 
+* Based on open3e, see https://github.com/abnoname/open3e.git
+* A version for [Docker](Docker/README.md) is also available.
 
 # Requirements
     pip3 install -r requirements.txt
