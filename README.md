@@ -10,8 +10,28 @@
 * Based on open3e, see https://github.com/abnoname/open3e.git
 * A version for [Docker](Docker/README.md) is also available.
 
-# Requirements
-    pip3 install -r requirements.txt
+# Installation
+For a fresh Raspberry PI install git, python3 and python-pip first:
+```
+sudo apt install git python3 python3-pip
+```
+It's strongly recommended to create a virtual environment to install E3onCAN. To do a install to folder `~/e3` follow these steps:
+```
+sudo apt install python3-virtualenv
+mkdir ~/e3 && cd ~/e3
+python3 -m venv .venv && source .venv/bin/activate
+git clone https://github.com/MyHomeMyData/E3onCAN.git
+cd E3onCAN
+pip3 install -r requirements.txt
+```
+Check, if it's working: `python3 E3onCANcollect.py -h` should show the help text.
+
+To deactivate venv Environment, simply use `deactivate`.
+
+To activate venv again use `cd ~/e3/E3onCAN && source ../.venv/bin/activate`
+
+It's also possible to setup the task as a service. Please refer to explanations given [here](https://github.com/open3e/open3e/wiki/030-Installation-und-Inbetriebnahme-von-open3E#open3e-als-service-einrichten-und-bei-systemstart-automatisch-starten).
+Of course of have to adapt folders and commands for E3onCAN accordingly.
 
 # Setup CAN Bus
     sudo ip link set can0 up type can bitrate 250000
