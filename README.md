@@ -142,6 +142,9 @@ CAN-address=98: data points with odd IDs
     ### **WORK IN PROGRESS**
 -->
 
+### 0.4.1 (2024-11-26)
+* (MyHomeMyData) Updated list of data points to version 20241125
+
 ### 0.4.0 (2024-04-24)
 * (MyHomeMyData) Added -g option to specify minimum time gap between decodings
 * (MyHomeMyData) Updated list of data points to version 20240505
