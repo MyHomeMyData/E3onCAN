@@ -1,9 +1,13 @@
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
+# Python venv
+.venv/
 # local log files
 *.log
 README.md.backup
 # vscode
 .vscode/
 nohup.out
+# open3e reference files
+.open3e_develop/
