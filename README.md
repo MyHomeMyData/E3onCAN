@@ -137,7 +137,6 @@ CAN-address=98: data points with odd IDs
 * To scan more than one device at the same time, start one instance for each device
 
 ## Donate
-
 <a href="https://www.paypal.com/donate/?hosted_button_id=WKY6JPYJNCCCQ"><img src="https://raw.githubusercontent.com/MyHomeMyData/E3onCAN/main/bluePayPal.svg" height="40"></a>  
 If you enjoyed this project — or just feeling generous, consider buying me a beer. Cheers! :beers:
 
