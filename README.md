@@ -146,6 +146,11 @@ If you enjoyed this project — or just feeling generous, consider buying me a b
     ### **WORK IN PROGRESS**
 -->
 
+### 0.4.2 (2025-12-19)
+* (MyHomeMyData) Updated list of data points to version 20250208
+* (MyHomeMyData) Removed obsolete parameter 'offset' from codecs
+* (MyHomeMyData) Added asserts to ensure length of data point definitions
+
 ### 0.4.1 (2024-11-26)
 * (MyHomeMyData) Updated list of data points to version 20241125
 
