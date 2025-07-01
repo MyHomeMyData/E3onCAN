@@ -126,7 +126,7 @@ CAN-address=98: data points with odd IDs
 | 1385.15 | Voltage, L3 | V |
 
 # Limitations, Hints
-* **Important:** After updating to new version pls. apply an update also to dependet packages: `pip3 install -r requirements.txt`
+* **Important:** After updating to new version pls. apply an update also to dependent packages: `pip3 install -r requirements.txt`
 * Scans for available data on CAN bus, no active request for data as with open3e.
 * Works best on external CAN bus of Vitocal 250 when connected to Vitocharge VX3 via external bus.
 * Data is typically updated by E3 device on change of value.
@@ -135,6 +135,75 @@ CAN-address=98: data points with odd IDs
 * Works for energy meter E380 on stand alone VX3 configuration.
 * For E380 data point IDs are set equal to CAN IDs. CAN IDs are restricted to the range of 0x250 .. 0x25D (592 .. 605) related to CAN-adresses of 97 (even IDs) and 98 (odd IDs).
 * To scan more than one device at the same time, start one instance for each device
+
+# How to set up a system service to automatically start E3onCAN on system start
+### If you followed above given installation steps, you may create a system service `e3oncan.service` as follows. It will use the venv environment you created during installation.
+Create description file:
+```
+sudo nano /lib/systemd/system/e3oncan.service
+```
+
+Insert following text, store and close the file (`<CTRL>-O` `<CTRL>-X`).
+```
+[Unit]
+Description=E3onCAN Service Script
+After=multi-user.target
+
+[Service]
+Type=simple
+ExecStartPre=/bin/sleep 5
+Restart=on-failure
+User=pi
+ExecStart=/bin/bash -c 'cd /home/pi/e3/E3onCAN && python3 /home/pi/e3/.venv/bin/E3onCANcollect.py -c can0 -dev vcal -m localhost:1883:open3e/vcal -mfstr {device}_{didNumber:04d}_{didName}'
+
+[Install]
+WantedBy=multi-user.target
+```
+Pls. adapt the command line parameters according to your needs.
+To make sure, all system components (especially the CAN-adapter) finished startup before E3onCAN is started, a delay time of 5 seconds is applied (`ExecStartPre=/bin/sleep 5`). If you encounter problems you may increase this value.
+
+### Apply correct access rights
+```
+sudo chmod 644 /lib/systemd/system/e3oncan.service
+```
+
+### Reload daemon and activate the service
+```
+sudo systemctl daemon-reload
+sudo systemctl enable e3oncan.service
+sudo systemctl start e3oncan.service
+```
+
+Check for correct operation:
+```
+systemctl status e3oncan.service
+```
+
+During system start E3onCAN will automatically be started. A restart of service will happen in case of a crash of E3onCAN.
+
+### Additional commands for dealing with services
+```
+# start a service
+sudo systemctl start application.service
+
+# stop a service
+sudo systemctl stop application.service
+
+# restart a service
+sudo systemctl restart application.service
+
+# reload a service
+sudo systemctl reload application.service
+
+# enable a service (service will be started on next system start up)
+sudo systemctl enable application.service
+
+# disable a service (service will NOT be started on next system start up)
+sudo systemctl disable application.service
+
+# get the status log of a service
+systemctl status application.service
+```
 
 ## Donate
 <a href="https://www.paypal.com/donate/?hosted_button_id=WKY6JPYJNCCCQ"><img src="https://raw.githubusercontent.com/MyHomeMyData/E3onCAN/main/bluePayPal.svg" height="40"></a>  
