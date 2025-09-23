@@ -88,6 +88,11 @@ class O3EInt32(O3EInt):
         assert string_len == 4
         O3EInt.__init__(self, string_len, idStr, scale=scale, signed=signed)
 
+class O3EInt64(O3EInt):
+    def __init__(self, string_len: int, idStr: str, scale: float = 1.0, signed=False):
+        assert string_len == 8
+        O3EInt.__init__(self, string_len, idStr, scale=scale, signed=signed)
+
 class O3EByteVal(udsoncan.DidCodec):
     def __init__(self, string_len: int, idStr: str):
         self.string_len = string_len
@@ -509,7 +514,10 @@ class O3EComplexType(udsoncan.DidCodec):
         result = dict()
         index = 0
         for subType in self.subTypes:
-            result[subType.id] = subType.decode(string_bin[index:index+subType.string_len])
+            try:
+                result[subType.id] = subType.decode(string_bin[index:index+subType.string_len])
+            except Exception as e:
+                result[subType.id] = str(e)
             index+=subType.string_len
         return dict(result)
     

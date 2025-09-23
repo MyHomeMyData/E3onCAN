@@ -154,7 +154,7 @@ Type=simple
 ExecStartPre=/bin/sleep 5
 Restart=on-failure
 User=pi
-ExecStart=/bin/bash -c 'cd /home/pi/e3/E3onCAN && python3 /home/pi/e3/.venv/bin/E3onCANcollect.py -c can0 -dev vcal -m localhost:1883:open3e/vcal -mfstr {device}_{didNumber:04d}_{didName}'
+ExecStart=/bin/bash -c 'cd /home/pi/e3/E3onCAN && source /home/pi/e3/.venv/bin/activate && python3 /home/pi/e3/E3onCAN/E3onCANcollect.py -c can0 -dev vcal -m localhost:1883:open3e/vcal -mfstr {device}_{didNumber:04d}_{didName}'
 
 [Install]
 WantedBy=multi-user.target
@@ -215,10 +215,15 @@ If you enjoyed this project — or just feeling generous, consider buying me a b
     ### **WORK IN PROGRESS**
 -->
 
+### 0.4.4 (2025-09-23)
+* (MyHomeMyData) Updated list of data points to version 20250903
+* (MyHomeMyData) Removed device specific data point definitions for vdens on data points 381 and 401 to 404
+* (MyHomeMyData) Adapted how-to about setting up a system service to new behaviour of venv
+
 ### 0.4.3 (2025-05-22)
 * (MyHomeMyData) Updated list of data points to version 20250422
 
-### 0.4.2 (2024-12-19)
+### 0.4.2 (2024-02-19)
 * (MyHomeMyData) Updated list of data points to version 20250208
 * (MyHomeMyData) Removed obsolete parameter 'offset' from codecs
 * (MyHomeMyData) Added asserts to ensure length of data point definitions
