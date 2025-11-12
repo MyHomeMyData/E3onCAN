@@ -33,6 +33,16 @@ To activate venv again use `cd ~/e3/E3onCAN && source ../.venv/bin/activate`
 It's also possible to setup the task as a service. Please refer to explanations given [here](https://github.com/open3e/open3e/wiki/030-Installation-und-Inbetriebnahme-von-open3E#open3e-als-service-einrichten-und-bei-systemstart-automatisch-starten).
 Of course of have to adapt folders and commands for E3onCAN accordingly.
 
+## Updating to latest version
+
+To update to latest verson available on Github:
+```
+cd ~/e3/E3onCAN
+git pull
+source ../.venv/bin/activate
+pip3 install -r requirements.txt
+```
+
 # Setup CAN Bus
     sudo ip link set can0 up type can bitrate 250000
 
@@ -214,6 +224,11 @@ If you enjoyed this project — or just feeling generous, consider buying me a b
     Placeholder for the next version (at the beginning of the line):
     ### **WORK IN PROGRESS**
 -->
+
+### 0.4.5 (2025-11-12)
+* (MyHomeMyData) Updated list of data points to version 20251102
+* (MyHomeMyData) Added version info to help text
+* (MyHomeMyData) Added hint regarding update procedure to Readme
 
 ### 0.4.4 (2025-09-23)
 * (MyHomeMyData) Updated list of data points to version 20250903
