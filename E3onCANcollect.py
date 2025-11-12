@@ -35,6 +35,8 @@ from Open3Ecodecs import *
 import E3onCANcodecs
 from E3onCANcodecs import *
 
+pgm_ver_str = 'V0.4.5 (2025-11-12)'
+
 tsNextDecoding = {}
 
 def decodeData(device, canid, ts, did, databytes):
@@ -173,8 +175,9 @@ def evalMessages(bus, device, args):
                         data["databytes"] = msg.data[4:]
                         data["collecting"] = True
 
+help_version_string = pgm_ver_str + ' using E3 data point definitions as of ' + Open3Edatapoints.dataIdentifiers['version']
 
-parser = argparse.ArgumentParser()
+parser = argparse.ArgumentParser(epilog=f'E3onCAN {help_version_string}')
 parser.add_argument("-c", "--can", type=str, help="use can device, e.g. can0")
 parser.add_argument("-f", "--file", type=str, help="use candump as input, e.g. candump_vx3")
 parser.add_argument("-dev", "--dev", type=str, help="device type --dev vcal or --dev vx3 or --dev vair or --dev vdens or --dev e380 or --dev e3100cb")
