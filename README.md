@@ -1,21 +1,27 @@
 # E3onCAN
-* Grab live data on CAN bus of Viessmann E3 series, e.g. Vitocharge VX3, Vitocal 250
-* Grab live data on CAN bus of Viessmann energy meter E380 CA (up to two devices)
-* Grab live data on CAN bus of Viessmann energy meter E3100CB
-* Only read operations are done on CAN bus. No write operations are possible.
-* Decode raw data to physical units for many data points
-* Optionally send data via MQTT
-* Tested so far on external CAN bus of Vitocal 250 connected to Vitocharge VX3, for E380 and for E3100CB
-* Processing of candumps instead of live data possible
-* Based on open3e, see https://github.com/abnoname/open3e.git
-* A version for [Docker](Docker/README.md) is also available.
 
-# Installation
-For a fresh Raspberry PI install git, python3 and python-pip first:
+E3onCAN passively reads data from the CAN bus of Viessmann E3 series devices (e.g. Vitocal 250, Vitocharge VX3) and Viessmann energy meters (E380 CA, E3100CB). Received raw data is decoded and output as physical values — either to the terminal or via MQTT to a broker. No write operations are performed on the CAN bus.
+
+The project is based on [open3e](https://github.com/abnoname/open3e.git) and extends it by passively listening to the so-called "Collect" protocol, which Viessmann E3 devices broadcast unsolicited on the CAN bus.
+
+## Supported Devices
+
+| Device | Type | Description |
+|---|---|---|
+| Vitocal 250 | `vcal` | Heat pump |
+| Vitocharge VX3 | `vx3` | Battery storage |
+| Vitoair | `vair` | Ventilation unit |
+| Vitodensxxx | `vdens` | Gas heating |
+| E380 CA | `e380` | Energy meter |
+| E3100CB | `e3100cb` | Energy meter |
+
+## Installation
+
+For a fresh Raspberry Pi installation, first install git, python3 and pip:
 ```
 sudo apt install git python3 python3-pip
 ```
-It's strongly recommended to create a virtual environment to install E3onCAN. To do a install to folder `~/e3` follow these steps:
+It's strongly recommended to create a virtual environment. To install into folder `~/e3`:
 ```
 sudo apt install python3-virtualenv
 mkdir ~/e3 && cd ~/e3
@@ -24,18 +30,16 @@ git clone https://github.com/MyHomeMyData/E3onCAN.git
 cd E3onCAN
 pip3 install -r requirements.txt
 ```
-Check, if it's working: `python3 E3onCANcollect.py -h` should show the help text.
+Check that it's working: `python3 E3onCANcollect.py -h` should show the help text.
 
-To deactivate venv Environment, simply use `deactivate`.
+To deactivate the virtual environment: `deactivate`
 
-To activate venv again use `cd ~/e3/E3onCAN && source ../.venv/bin/activate`
+To activate it again: `cd ~/e3/E3onCAN && source ../.venv/bin/activate`
 
-It's also possible to setup the task as a service. Please refer to explanations given [here](https://github.com/open3e/open3e/wiki/030-Installation-und-Inbetriebnahme-von-open3E#open3e-als-service-einrichten-und-bei-systemstart-automatisch-starten).
-Of course of have to adapt folders and commands for E3onCAN accordingly.
+Setting up E3onCAN as a system service is also possible, see [Setting up a system service](#setting-up-a-system-service).
 
-## Updating to latest version
+### Updating to the latest version
 
-To update to latest verson available on Github:
 ```
 cd ~/e3/E3onCAN
 git pull
@@ -43,87 +47,107 @@ source ../.venv/bin/activate
 pip3 install -r requirements.txt
 ```
 
-# Setup CAN Bus
-    sudo ip link set can0 up type can bitrate 250000
+> **Note:** After updating, always update the dependent packages as well (`pip3 install -r requirements.txt`).
 
-# Usage
-    usage: E3onCANcollect.py [-h] [-c CAN] [-dev vx3|vcal|vair|e380|e3100cb] [-canid CANID] [-r READ] [-raw] [-m MQTT] [-mfstr MQTTFORMATSTRING] [-muser MQTTUSER] [-mpass MQTTPASS] [-retain] [-retainall] [-v]
+## Setup CAN Bus
 
-    options:
-    -h, --help            show this help message and exit
-    -c CAN, --can CAN     use can device, e.g. can0
-    -dev dev, --dev dev   device, vx3 or vcal or vair or e380 or e3100cb
-    -canid CANID, --canid CANID
-                          CAN ID to listen to, e.g. -canid 0x451, overrides CAN ID selected by device
-    -r READ, --read READ  read did, e.g. 1690,1834
-    -raw, --raw           return raw data for all dids
-    -g, --gap             minimum time gap (seconds) between decoding of specific dids.
-                          Default: 0 => immediate decoding.
-    -m MQTT, --mqtt MQTT  publish to server, e.g. localhost:1883:topicname
-    -mfstr MQTTFORMATSTRING, --mqttformatstring MQTTFORMATSTRING
-                          mqtt formatstring e.g. {device}_{didNumber:04d}_{didName}
-    -muser MQTTUSER, --mqttuser MQTTUSER
-                          mqtt username
-    -mpass MQTTPASS, --mqttpass MQTTPASS
-                          mqtt password
-    -retain dids, --retain dids
-   	                      set mqtt retain flag for dids, e.g. 1834,1836
-    -retainall, --retainall
-   	                      set mqtt retain flag for all dids
-    -v, --verbose         verbose info
+```
+sudo ip link set can0 up type can bitrate 250000
+```
 
-# Read data points
-    python3 E3onCANcollect.py -c can0 -dev vx3 -r 1834 -v
-    2023-11-15 18:00:37.186155 1834 ElectricalEnergyStorageStateOfEnergy: {"SoC": 3863.0, "Unkown": 0.0}
-    2023-11-15 18:00:49.215978 1834 ElectricalEnergyStorageStateOfEnergy: {"SoC": 3858.0, "Unkown": 0.0}
-    
-    python3 E3onCANcollect.py -c can0 -dev e380 -r 0x250,0x256 -v
-    2023-11-15 18:02:49.874932 592 GridActivePower: {"L1": 96.0, "L2": 7.0, "L3": -108.0, "Total": -4.0}
-    2023-11-15 18:02:49.878761 598 GridVoltage: {"L1": 233.0, "L2": 234.0, "L3": 233.0, "Frequency": 50.0}
-    
-# Publish data points to mqtt
-    python3 E3onCANcollect.py -c can0 -dev vx3 -r 1690,1834 -m localhost:1883:open3e
-    -> will decode received data points and publish data to broker localhost on topic open3e/did_name
+## Usage
 
-    python3 E3onCANcollect.py -c can0 -dev vx3 -m localhost:1883:open3e -mfstr {device}_{didNumber:04d}_{didName} -retain 1834
-    -> will publish **all** received dids with custom identifier format: e.g. open3e/vx3_1690_ElectricalEnergySystemPhotovoltaicStatus
-    -> mqtt retain flag for did 1834 will be set
+```
+usage: E3onCANcollect.py [-h] [-c CAN] [-f FILE] [-dev DEV] [-canid CANID]
+                         [-r READ] [-raw] [-g GAP]
+                         [-m MQTT] [-mfstr MQTTFORMATSTRING] [-muser MQTTUSER] [-mpass MQTTPASS]
+                         [-retain DIDS] [-retainall] [-v]
 
-# Convert candump log to data points
-    candump -t a can0 > candump.log
-    python3 E3onCANcollect.py -f candump.log -dev vx3 -canid 0x451 -v
-    2023-11-15 14:39:11.046815 378 PointOfCommonCouplingPhaseOne: {"ActivePower": 55.0, "ReactivePower": -119.0}
-    2023-11-15 14:39:11.059317 379 PointOfCommonCouplingPhaseTwo: {"ActivePower": -22.0, "ReactivePower": -81.0}
-    2023-11-15 14:39:11.073367 380 PointOfCommonCouplingPhaseThree: {"ActivePower": -38.0, "ReactivePower": -89.0}
+options:
+  -h, --help                          show this help message and exit
+  -c CAN, --can CAN                   use CAN device, e.g. can0
+  -f FILE, --file FILE                use candump file as input, e.g. candump.log
+  -dev DEV, --dev DEV                 device type: vcal | vx3 | vair | vdens | e380 | e3100cb
+  -canid CANID, --canid CANID         CAN ID to listen to, e.g. 0x451 (overrides device default)
+  -r READ, --read READ                only decode specific DIDs, e.g. 1690,1834
+  -raw, --raw                         output raw hex data instead of decoded values
+  -g GAP, --gap GAP                   minimum time gap (seconds) between decodings of the same DID
+  -m MQTT, --mqtt MQTT                MQTT broker, e.g. localhost:1883:topicname
+  -mfstr MFSTR, --mqttformatstring    MQTT topic format string, e.g. {device}_{didNumber:04d}_{didName}
+  -muser MUSER, --mqttuser MUSER      MQTT username
+  -mpass MPASS, --mqttpass MPASS      MQTT password
+  -retain DIDS, --retain DIDS         set MQTT retain flag for specific DIDs, e.g. 1834,1836
+  -retainall, --retainall             set MQTT retain flag for all DIDs
+  -v, --verbose                       verbose output
+```
 
-# E380 data and units
-Up to two E380 energy meters are supported. IDs of data points depends on devices CAN address:
+## Examples
 
-CAN-address=97: data points with even IDs (default configuration)
+### Read data points (terminal output)
 
-CAN-address=98: data points with odd IDs
+```
+python3 E3onCANcollect.py -c can0 -dev vx3 -r 1834 -v
+2023-11-15 18:00:37.186155 1834 ElectricalEnergyStorageStateOfEnergy: {"SoC": 3863.0, "Unkown": 0.0}
+2023-11-15 18:00:49.215978 1834 ElectricalEnergyStorageStateOfEnergy: {"SoC": 3858.0, "Unkown": 0.0}
+```
 
-| ID | Data| Unit |
-| ------|:--- |------|
-| 592,593 | Active Power L1, L2, L3, Total |  W |
-| 594,595 | Reactive Power L1, L2, L3, Total | VA |
-| 596,597 | Current, L1, L2, L3, cosPhi | A, - |
-| 598,599 | Voltage, L1, L2, L3, Frequency | V, Hz |
-| 600,601 | Cumulated Import, Export | kWh |
-| 602,603 | Total Active Power, Total Reactive Power | W, VA |
-| 604,605 | Cumulated Import | kWh |
+```
+python3 E3onCANcollect.py -c can0 -dev e380 -r 0x250,0x256 -v
+2023-11-15 18:02:49.874932 592 GridActivePower: {"L1": 96.0, "L2": 7.0, "L3": -108.0, "Total": -4.0}
+2023-11-15 18:02:49.878761 598 GridVoltage: {"L1": 233.0, "L2": 234.0, "L3": 233.0, "Frequency": 50.0}
+```
 
-# E3100CB data and units
+### Publish data points via MQTT
 
-| ID | Data| Unit |
-| ------|:--- |------|
+```
+python3 E3onCANcollect.py -c can0 -dev vx3 -r 1690,1834 -m localhost:1883:open3e
+```
+Decodes received data points and publishes them to broker `localhost` under topic `open3e/<didName>`.
+
+```
+python3 E3onCANcollect.py -c can0 -dev vx3 -m localhost:1883:open3e -mfstr {device}_{didNumber:04d}_{didName} -retain 1834
+```
+Publishes **all** received DIDs with a custom topic format, e.g. `open3e/vx3_1690_ElectricalEnergySystemPhotovoltaicStatus`. The retain flag is set for DID 1834.
+
+### Process a candump log file
+
+```
+candump -t a can0 > candump.log
+python3 E3onCANcollect.py -f candump.log -dev vx3 -canid 0x451 -v
+2023-11-15 14:39:11.046815 378 PointOfCommonCouplingPhaseOne: {"ActivePower": 55.0, "ReactivePower": -119.0}
+2023-11-15 14:39:11.059317 379 PointOfCommonCouplingPhaseTwo: {"ActivePower": -22.0, "ReactivePower": -81.0}
+2023-11-15 14:39:11.073367 380 PointOfCommonCouplingPhaseThree: {"ActivePower": -38.0, "ReactivePower": -89.0}
+```
+
+## Energy Meter Data Points
+
+### E380 CA
+
+Up to two E380 energy meters are supported. DID numbers depend on the device's CAN address:
+- CAN address 97 → even IDs (default configuration)
+- CAN address 98 → odd IDs
+
+| ID | Data | Unit |
+|---|---|---|
+| 592, 593 | Active Power L1, L2, L3, Total | W |
+| 594, 595 | Reactive Power L1, L2, L3, Total | VA |
+| 596, 597 | Current L1, L2, L3, cosPhi | A, - |
+| 598, 599 | Voltage L1, L2, L3, Frequency | V, Hz |
+| 600, 601 | Cumulated Import, Export | kWh |
+| 602, 603 | Total Active Power, Total Reactive Power | W, VA |
+| 604, 605 | Cumulated Import | kWh |
+
+### E3100CB
+
+| ID | Data | Unit |
+|---|---|---|
 | 1385.01 | Cumulated Import | kWh |
 | 1385.02 | Cumulated Export | kWh |
-| 1385.03 | State: -1 => feedin \| +1 => supply | |
-| 1385.04 | Active Power Total |  W |
-| 1385.08 | Active Power L1 |  W |
-| 1385.12 | Active Power L2 |  W |
-| 1385.16 | Active Power L3 |  W |
+| 1385.03 | State: -1 = feed-in, +1 = supply | - |
+| 1385.04 | Active Power Total | W |
+| 1385.08 | Active Power L1 | W |
+| 1385.12 | Active Power L2 | W |
+| 1385.16 | Active Power L3 | W |
 | 1385.05 | Reactive Power Total | var |
 | 1385.09 | Reactive Power L1 | var |
 | 1385.13 | Reactive Power L2 | var |
@@ -131,30 +155,35 @@ CAN-address=98: data points with odd IDs
 | 1385.06 | Current, Absolute L1 | A |
 | 1385.10 | Current, Absolute L2 | A |
 | 1385.14 | Current, Absolute L3 | A |
-| 1385.07 | Voltage, L1 | V |
-| 1385.11 | Voltage, L2 | V |
-| 1385.15 | Voltage, L3 | V |
+| 1385.07 | Voltage L1 | V |
+| 1385.11 | Voltage L2 | V |
+| 1385.15 | Voltage L3 | V |
 
-# Limitations, Hints
-* **Important:** After updating to new version pls. apply an update also to dependent packages: `pip3 install -r requirements.txt`
-* Scans for available data on CAN bus, no active request for data as with open3e.
-* Works best on external CAN bus of Vitocal 250 when connected to Vitocharge VX3 via external bus.
-* Data is typically updated by E3 device on change of value.
-* Data of slave device (e.g. VX3) typically is available on external CAN, data of master device (e.g. Vitocal) typically is available on internal CAN
-* Will probably not work on stand alone devices. See open3e for this case.
-* Works for energy meter E380 on stand alone VX3 configuration.
-* For E380 data point IDs are set equal to CAN IDs. CAN IDs are restricted to the range of 0x250 .. 0x25D (592 .. 605) related to CAN-adresses of 97 (even IDs) and 98 (odd IDs).
-* To scan more than one device at the same time, start one instance for each device
+## Hints and Limitations
 
-# How to set up a system service to automatically start E3onCAN on system start
-### If you followed above given installation steps, you may create a system service `e3oncan.service` as follows. It will use the venv environment you created during installation.
-Create description file:
+* **Read-only:** Only read operations are performed on the CAN bus — no write operations.
+* E3onCAN passively waits for data (no active polling like open3e).
+* Works best on the external CAN bus of a Vitocal 250 connected to a Vitocharge VX3.
+* Data from the slave device (e.g. VX3) is typically available on the external CAN bus; data from the master device (e.g. Vitocal) is typically available on the internal CAN bus.
+* Will probably not work on stand-alone devices without a connection to another E3 device — use open3e for that case.
+* Works for the E380 energy meter in a stand-alone VX3 configuration.
+* To monitor more than one device simultaneously, start one instance per device.
+
+## Setting up a System Service
+
+E3onCAN can be set up as a systemd service that starts automatically on system boot.
+
+The following steps assume the installation in `~/e3` described above. For a general guide see also the [open3e documentation](https://github.com/open3e/open3e/wiki/030-Installation-und-Inbetriebnahme-von-open3E#open3e-als-service-einrichten-und-bei-systemstart-automatisch-starten).
+
+**Create the service description file:**
+
 ```
 sudo nano /lib/systemd/system/e3oncan.service
 ```
 
-Insert following text, store and close the file (`<CTRL>-O` `<CTRL>-X`).
-```
+Insert the following content (adapt the command line parameters to your needs), then save and close (`<CTRL>-O` `<CTRL>-X`):
+
+```ini
 [Unit]
 Description=E3onCAN Service Script
 After=multi-user.target
@@ -169,57 +198,43 @@ ExecStart=/bin/bash -c 'cd /home/pi/e3/E3onCAN && source /home/pi/e3/.venv/bin/a
 [Install]
 WantedBy=multi-user.target
 ```
-Pls. adapt the command line parameters according to your needs.
-To make sure, all system components (especially the CAN-adapter) finished startup before E3onCAN is started, a delay time of 5 seconds is applied (`ExecStartPre=/bin/sleep 5`). If you encounter problems you may increase this value.
 
-### Apply correct access rights
+The 5-second delay (`ExecStartPre=/bin/sleep 5`) ensures the CAN adapter is ready before E3onCAN starts. Increase this value if problems occur.
+
+**Set permissions and activate the service:**
+
 ```
 sudo chmod 644 /lib/systemd/system/e3oncan.service
-```
-
-### Reload daemon and activate the service
-```
 sudo systemctl daemon-reload
 sudo systemctl enable e3oncan.service
 sudo systemctl start e3oncan.service
 ```
 
-Check for correct operation:
+**Check status:**
+
 ```
 systemctl status e3oncan.service
 ```
 
-During system start E3onCAN will automatically be started. A restart of service will happen in case of a crash of E3onCAN.
+**Other useful commands:**
 
-### Additional commands for dealing with services
 ```
-# start a service
-sudo systemctl start application.service
-
-# stop a service
-sudo systemctl stop application.service
-
-# restart a service
-sudo systemctl restart application.service
-
-# reload a service
-sudo systemctl reload application.service
-
-# enable a service (service will be started on next system start up)
-sudo systemctl enable application.service
-
-# disable a service (service will NOT be started on next system start up)
-sudo systemctl disable application.service
-
-# get the status log of a service
-systemctl status application.service
+sudo systemctl stop e3oncan.service      # stop the service
+sudo systemctl restart e3oncan.service   # restart the service
+sudo systemctl disable e3oncan.service   # disable autostart
 ```
+
+## Docker
+
+A Docker version is also available, see [Docker/README.md](Docker/README.md).
 
 ## Donate
+
 <a href="https://www.paypal.com/donate/?hosted_button_id=WKY6JPYJNCCCQ"><img src="https://raw.githubusercontent.com/MyHomeMyData/E3onCAN/main/bluePayPal.svg" height="40"></a>  
 If you enjoyed this project — or just feeling generous, consider buying me a beer. Cheers! :beers:
 
 ## Changelog
+
 <!--
     Placeholder for the next version (at the beginning of the line):
     ### **WORK IN PROGRESS**
