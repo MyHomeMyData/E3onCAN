@@ -15,6 +15,37 @@ The project is based on [open3e](https://github.com/abnoname/open3e.git) and ext
 | E380 CA | `e380` | Energy meter |
 | E3100CB | `e3100cb` | Energy meter |
 
+## What's new in V0.5.0
+
+### Variant data points replace device-specific data point files
+
+Previous versions handled differences between E3 device types (Vitocal,
+Vitocharge VX3, Vitoair, Vitodensxxx) by maintaining separate data point
+files per device (`Open3EdatapointsVx3.py`, `Open3EdatapointsVcal.py`, etc.).
+At startup, the general data point table was loaded and then overlaid with
+device-specific overrides or deletions.
+
+V0.5.0 adopts the **variant data point** concept introduced in open3e v0.6.0.
+Instead of per-device tables, a single file `Open3EdatapointsVariants.py`
+lists alternative codec definitions keyed by **DID and payload length**. At
+runtime, the correct codec is selected automatically based on the actual
+number of bytes received for a given DID — no prior knowledge of the connected
+device type is required.
+
+The internal DID lookup key changed from `DID` (integer) to `DID.length`
+(e.g. `"1603.8"` or `"1603.12"`), allowing the same DID to be decoded
+differently depending on the payload length sent by the device on the bus.
+
+**What this means in practice:**
+- The device-specific files `Open3EdatapointsVx3.py`, `Open3EdatapointsVcal.py`,
+  `Open3EdatapointsVair.py` and `Open3EdatapointsVdens.py` are no longer used
+  and can be removed.
+- The `-dev` parameter still selects the CAN-ID to listen to and switches
+  between E3 devices and energy meters, but no longer controls which data
+  points are available.
+- Multiple E3 device types on the same CAN bus are decoded correctly without
+  any configuration change.
+
 ## Installation
 
 For a fresh Raspberry Pi installation, first install git, python3 and pip:

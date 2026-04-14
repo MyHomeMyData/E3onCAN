@@ -239,7 +239,7 @@ devCANid = {
 
 if (args.canid != None):
     try:
-        CANid = list([eval(args.canid)])
+        CANid = list([int(args.canid, 0)])
     except:
         CANid = devCANid[device]
         print('WARNING: Could not evaluate given canid, using default value: '+json.dumps(CANid))
@@ -250,12 +250,12 @@ if (args.read != None):
     dids_str=args.read.split(",")
     dids = []
     for did in dids_str:
-        if (args.dev == 'e380') and (eval(did) in CANid):
-            dids.append(str(eval(did)))
+        if (args.dev == 'e380') and (int(did, 0) in CANid):
+            dids.append(str(int(did, 0)))
         elif args.dev == 'e3100cb':
             dids.append(did)
         else:
-            dids.append(str(eval(did)))
+            dids.append(str(int(did, 0)))
 else:
     dids = None
 
@@ -276,15 +276,17 @@ else:
     filters = [{"can_id": CANid[0], "can_mask": 0x7FF, "extended": False}]
 
 if(args.can != None):
+    if args.file != None:
+        print('WARNING: Both -c and -f specified. Using -c ('+args.can+'), ignoring -f.')
     channel = args.can
-    args.file = None        # Avoid contradicting channels
+    args.file = None
 elif (args.file != None):
     channel = args.file
 else:
     channel = 'can0'
 
 if args.gap != None:
-    tsGap = int(eval(args.gap) * 1000)
+    tsGap = int(float(args.gap) * 1000)
 else:
     tsGap = 0
 
@@ -293,7 +295,7 @@ retaindids = []
 if (args.retain != None):
     retaindids_str=args.retain.split(",")
     for did in retaindids_str:
-        retaindids.append(eval(did))
+        retaindids.append(int(did, 0))
 
 client_mqtt = None
 mqttParamas = None

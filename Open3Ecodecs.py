@@ -479,13 +479,13 @@ class O3EList(udsoncan.DidCodec):
         self.string_len = string_len
         self.id = idStr
         self.subTypes = subTypes
-        self.len = len
+        self.len = arraylength
         self.desc = desc
         self.info = info
         self.acc = acc
 
-    def encode(self, string_ascii: Any) -> bytes:        
-        if(flag_rawmode == True): 
+    def encode(self, string_ascii: Any) -> bytes:
+        if(flag_rawmode == True):
             return RawCodec.encode(self, string_ascii)
         else:
             input_dict = {k.lower():v for k,v in string_ascii.items()}
@@ -523,8 +523,8 @@ class O3EList(udsoncan.DidCodec):
             # we expect a byte element with the name "Count" or "count"
             if subType.id.lower() == 'count':
                 count = int(subType.decode(string_bin[index:index+subType.string_len]))
-                result[subType.id]=count 
-                index =+ subType.string_len 
+                result[subType.id]=count
+                index += subType.string_len
 
             elif type(subType) is O3EComplexType:
                 result[subType.id] = []
