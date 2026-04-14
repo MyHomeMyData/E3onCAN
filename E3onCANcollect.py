@@ -17,25 +17,19 @@
 import can          # https://pypi.org/project/python-can/
 import argparse
 import paho.mqtt.client as paho
-import importlib
+import json
 import datetime
 
 import Open3Edatapoints
-from Open3Edatapoints import *
+import Open3EdatapointsVariants
 
 import E3onCANdatapointsE380
-from E3onCANdatapointsE380 import *
-
 import E3onCANdatapointsE3100CB
-from E3onCANdatapointsE3100CB import *
 
 import Open3Ecodecs
-from Open3Ecodecs import *
-
 import E3onCANcodecs
-from E3onCANcodecs import *
 
-pgm_ver_str = 'V0.4.5 (2025-11-12)'
+pgm_ver_str = 'V0.5.0 (2025-04-14)'
 
 tsNextDecoding = {}
 
@@ -51,16 +45,18 @@ def decodeData(device, canid, ts, did, databytes):
             ret = client_mqtt.publish(topic, str(obj), retain=set_retain)                  
 
     didStr = str(did)
+    didLen = len(databytes)
     tsNow = int(datetime.datetime.now().timestamp()*1000)
     if not didStr in tsNextDecoding:
         tsNextDecoding[didStr] = 0
     if tsGap == 0 or tsNow >= tsNextDecoding[didStr]:
         tsNextDecoding[didStr] = tsNow + tsGap
-        if did in dataIdentifiers:
+        key = f"{didStr}.{str(didLen)}"
+        if key in dataIdentifiers:
             try:
                 topicPf = ''    # clear topic Prefix
-                didNAME = dataIdentifiers[did].id
-                values  = dataIdentifiers[did].decode(databytes)
+                didNAME = dataIdentifiers[key].id
+                values  = dataIdentifiers[key].decode(databytes)
             except Exception as e:
                 # Exception while decoding
                 topicPf = "$"   # set topic Prefix
@@ -175,7 +171,17 @@ def evalMessages(bus, device, args):
                         data["databytes"] = msg.data[4:]
                         data["collecting"] = True
 
-help_version_string = pgm_ver_str + ' using E3 data point definitions as of ' + Open3Edatapoints.dataIdentifiers['version']
+def getFullDidsList(commonDids, variantDids={}):
+    allDids = {}
+    for did in commonDids:
+        allDids[f"{str(did)}.{str(commonDids[did].string_len)}"] = commonDids[did]
+        if did in variantDids:
+            for didLen in variantDids[did]:
+                allDids[f"{str(did)}.{str(didLen)}"] = variantDids[did][didLen]
+    return allDids
+
+
+help_version_string = f"{pgm_ver_str} using E3 data point definitions as of {Open3Edatapoints.dataIdentifiers['Version']} (common) and {Open3EdatapointsVariants.dataIdentifiers['Version']} (variants)"
 
 parser = argparse.ArgumentParser(epilog=f'E3onCAN {help_version_string}')
 parser.add_argument("-c", "--can", type=str, help="use can device, e.g. can0")
@@ -215,40 +221,19 @@ if (device in ['e380','e3100cb']) and (args.canid != None):
     exit(0)
 
 if device == 'e380':
-    dataIdentifiers = dataIdentifiersE380
+    dataIdentifiers = getFullDidsList(E3onCANdatapointsE380.dataIdentifiersE380)
 elif device == 'e3100cb':
-    dataIdentifiers = dataIdentifiersE3100CB
+    dataIdentifiers = getFullDidsList(E3onCANdatapointsE3100CB.dataIdentifiersE3100CB)
 else:
-    # load datapoints for selected device
-    module_name =  "Open3Edatapoints" + device.capitalize()
-    didmoduledev = importlib.import_module(module_name)
-    dataIdentifiersDev = didmoduledev.dataIdentifiers["dids"]
-
-    # load general datapoints table from Open3Edatapoints.py
-    dataIdentifiers = dataIdentifiers["dids"]
-
-    # overlay device dids over general table 
-    lstpops = []
-    for itm in dataIdentifiers:
-        if not (itm in dataIdentifiersDev):
-            lstpops.append(itm)
-        elif not (dataIdentifiersDev[itm] is None):  # None means 'no change', nothing special
-            dataIdentifiers[itm] = dataIdentifiersDev[itm]
-
-    # remove dids not existing with the device
-    for itm in lstpops:
-        dataIdentifiers.pop(itm)
-
-    # probably useless but to indicate that it's not required anymore
-    dataIdentifiersDev = None
-    didmoduledev = None
+    # load datapoints for common and variant did lists
+    dataIdentifiers = getFullDidsList(Open3Edatapoints.dataIdentifiers["dids"], Open3EdatapointsVariants.dataIdentifiers["dids"])
 
 devCANid = {
     "vcal" : list([0x693]),
     "vx3"  : list([0x451]),
     "vair" : list([0x451]),
     "vdens": list([0x451]),
-    "e380" : list(dataIdentifiersE380.keys()),
+    "e380" : list(E3onCANdatapointsE380.dataIdentifiersE380.keys()),
     "e3100cb" : list([0x569])
 }
 

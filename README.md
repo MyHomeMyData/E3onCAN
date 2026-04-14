@@ -240,6 +240,10 @@ If you enjoyed this project — or just feeling generous, consider buying me a b
     ### **WORK IN PROGRESS**
 -->
 
+### 0.5.0 (2026-04-14)
+* (MyHomeMyData) Updated list of data points to version 20260227 (common) and 20260217 (variants)
+* (MyHomeMyData) Data point handling has been switched to variant data points, see project open3e from v0.6.0 onwards
+
 ### 0.4.5 (2025-11-12)
 * (MyHomeMyData) Updated list of data points to version 20251102
 * (MyHomeMyData) Added version info to help text
