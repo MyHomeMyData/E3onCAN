@@ -46,6 +46,13 @@ differently depending on the payload length sent by the device on the bus.
 - Multiple E3 device types on the same CAN bus are decoded correctly without
   any configuration change.
 
+### Reference list of all known data points
+
+[Open3Edatapoints.md](Open3Edatapoints.md) is a new reference document listing
+all currently known data points, many with a short description, unit, access
+mode (read-only / read-write), and links to further information. It covers both
+the common data points and the variant definitions.
+
 ## Installation
 
 For a fresh Raspberry Pi installation, first install git, python3 and pip:
@@ -274,6 +281,7 @@ If you enjoyed this project — or just feeling generous, consider buying me a b
 ### 0.5.0 (2026-04-14)
 * (MyHomeMyData) Updated list of data points to version 20260227 (common) and 20260217 (variants)
 * (MyHomeMyData) Data point handling has been switched to variant data points, see project open3e from v0.6.0 onwards
+* (MyHomeMyData) Added list of known data points as markdown file
 
 ### 0.4.5 (2025-11-12)
 * (MyHomeMyData) Updated list of data points to version 20251102
