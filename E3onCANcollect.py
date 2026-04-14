@@ -83,23 +83,23 @@ def decodeData(device, canid, ts, did, databytes):
             )
             set_retain = (retainall == True) or (did in retaindids)
 
-            if (args.json == True): 
-                # Send one JSON message 
-                ret = client_mqtt.publish(mqttParamas[2] + "/" + topicStr, json.dumps(values))    
+            if (args.json == True):
+                # Send one JSON message
+                ret = client_mqtt.publish(f"{mqttParamas[2]}/{topicStr}", json.dumps(values))
             else:
                 # Split down to scalar types
-                mqttdump(mqttParamas[2] + "/" + topicStr, values, set_retain)
+                mqttdump(f"{mqttParamas[2]}/{topicStr}", values, set_retain)
             if (args.verbose == True):
-                print(str(did)+' '+didNAME+': '+json.dumps(values))
+                print(f"{did} {didNAME}: {json.dumps(values)}")
         else:
             if (args.verbose == True):
                 if ts > 0:
-                    dt_str = str(datetime.datetime.fromtimestamp(ts))+' '
+                    dt_str = f"{datetime.datetime.fromtimestamp(ts)} "
                 else:
                     dt_str = ''
-                print(dt_str+str(did)+' '+didNAME+': '+json.dumps(values))
+                print(f"{dt_str}{did} {didNAME}: {json.dumps(values)}")
             else:
-                print(didNAME+': '+json.dumps(values))
+                print(f"{didNAME}: {json.dumps(values)}")
 
 def evalMessages(bus, device, args):
     data = {
@@ -122,9 +122,7 @@ def evalMessages(bus, device, args):
         elif args.dev == 'e3100cb' and len(msg.data) == 8:
             # e3100cb sends 8 bytes of data w/o any protocol
             # did = CAN id plus databyte 3
-            D3str = '00'+str(msg.data[3])
-            D3str = D3str[-2:]
-            did = str(id)+'.'+D3str
+            did = f"{id}.{msg.data[3]:02d}"
             if (dids == None) or (did in dids):
                 decodeData(device,id,msg.timestamp,did,msg.data[4:])    # Ignore bytes 0 to 3
         else:
@@ -208,7 +206,7 @@ if(args.dev != None):
     device = args.dev
 else:
     device = 'vx3'
-    print('No device specified. Using '+device+' as default.')
+    print(f"No device specified. Using {device} as default.")
 
 Open3Ecodecs.flag_dev = device
 
@@ -242,7 +240,7 @@ if (args.canid != None):
         CANid = list([int(args.canid, 0)])
     except:
         CANid = devCANid[device]
-        print('WARNING: Could not evaluate given canid, using default value: '+json.dumps(CANid))
+        print(f"WARNING: Could not evaluate given canid, using default value: {json.dumps(CANid)}")
 else:
     CANid = devCANid[device]
 
@@ -277,7 +275,7 @@ else:
 
 if(args.can != None):
     if args.file != None:
-        print('WARNING: Both -c and -f specified. Using -c ('+args.can+'), ignoring -f.')
+        print(f"WARNING: Both -c and -f specified. Using -c ({args.can}), ignoring -f.")
     channel = args.can
     args.file = None
 elif (args.file != None):
