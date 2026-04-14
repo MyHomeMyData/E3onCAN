@@ -1,0 +1,13 @@
+services:
+  e3oncan:
+    container_name: e3oncan
+    build:
+      context: Docker       # Dockerfile clones latest E3onCAN from GitHub
+    network_mode: "host"    # required for CAN bus (SocketCAN) and local MQTT access
+    environment:
+      # Adapt CLI_ARGS to your setup. Examples:
+      #   E3 device via MQTT:  -c can0 -dev vcal -m localhost:1883:open3e -mfstr {device}_{didNumber:04d}_{didName}
+      #   Energy meter E380:   -c can0 -dev e380 -m localhost:1883:open3e
+      #   Terminal output only: -c can0 -dev vcal -v
+      CLI_ARGS: "-c can0 -dev vcal -m localhost:1883:open3e -mfstr {device}_{didNumber:04d}_{didName}"
+    restart: always
