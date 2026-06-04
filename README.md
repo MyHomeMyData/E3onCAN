@@ -291,6 +291,10 @@ If you enjoyed this project — or just feeling generous, consider buying me a b
     ### **WORK IN PROGRESS**
 -->
 
+### 0.5.1 (2026-06-04)
+* (MyHomeMyData) Updated list of data points to version 20260528 (common) and 20260527 (variants)
+* (MyHomeMyData) Fixed: retain flag was ignored when using --json together with --retain or --retainall
+
 ### 0.5.0 (2026-04-14)
 * (MyHomeMyData) Updated list of data points to version 20260227 (common) and 20260217 (variants)
 * (MyHomeMyData) Data point handling has been switched to variant data points, see project open3e from v0.6.0 onwards

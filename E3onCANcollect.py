@@ -29,7 +29,7 @@ import E3onCANdatapointsE3100CB
 import Open3Ecodecs
 import E3onCANcodecs
 
-pgm_ver_str = 'V0.5.0 (2026-04-14)'
+pgm_ver_str = 'V0.5.1 (2026-06-04)'
 
 tsNextDecoding = {}
 
@@ -85,7 +85,7 @@ def decodeData(device, canid, ts, did, databytes):
 
             if (args.json == True):
                 # Send one JSON message
-                ret = client_mqtt.publish(f"{mqttParamas[2]}/{topicStr}", json.dumps(values))
+                ret = client_mqtt.publish(f"{mqttParamas[2]}/{topicStr}", json.dumps(values), retain=set_retain)
             else:
                 # Split down to scalar types
                 mqttdump(f"{mqttParamas[2]}/{topicStr}", values, set_retain)
