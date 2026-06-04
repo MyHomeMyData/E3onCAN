@@ -85,7 +85,7 @@ def decodeData(device, canid, ts, did, databytes):
 
             if (args.json == True):
                 # Send one JSON message
-                ret = client_mqtt.publish(f"{mqttParamas[2]}/{topicStr}", json.dumps(values))
+                ret = client_mqtt.publish(f"{mqttParamas[2]}/{topicStr}", json.dumps(values), retain=set_retain)
             else:
                 # Split down to scalar types
                 mqttdump(f"{mqttParamas[2]}/{topicStr}", values, set_retain)
