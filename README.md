@@ -291,6 +291,10 @@ If you enjoyed this project — or just feeling generous, consider buying me a b
     ### **WORK IN PROGRESS**
 -->
 
+### 0.5.2 (2026-06-21)
+* (MyHomeMyData) Fixed: MQTT client ID was identical across all instances, causing the broker to disconnect a running session whenever another instance connected ("session taken over"), which could result in stale retained values
+* (MyHomeMyData) Added logging of failed MQTT publish attempts
+
 ### 0.5.1 (2026-06-04)
 * (MyHomeMyData) Updated list of data points to version 20260528 (common) and 20260527 (variants)
 * (MyHomeMyData) Fixed: retain flag was ignored when using --json together with --retain or --retainall

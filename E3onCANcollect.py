@@ -19,6 +19,7 @@ import argparse
 import paho.mqtt.client as paho
 import json
 import datetime
+import uuid
 
 import Open3Edatapoints
 import Open3EdatapointsVariants
@@ -29,9 +30,15 @@ import E3onCANdatapointsE3100CB
 import Open3Ecodecs
 import E3onCANcodecs
 
-pgm_ver_str = 'V0.5.1 (2026-06-04)'
+pgm_ver_str = 'V0.5.2 (2026-06-21)'
 
 tsNextDecoding = {}
+
+def mqttPublish(topic, payload, set_retain):
+    ret = client_mqtt.publish(topic, payload, retain=set_retain)
+    if ret.rc != paho.MQTT_ERR_SUCCESS:
+        print(f"WARNING: MQTT publish to {topic} failed: {ret.rc}")
+    return ret
 
 def decodeData(device, canid, ts, did, databytes):
     def mqttdump(topic, obj, set_retain):
@@ -42,7 +49,7 @@ def decodeData(device, canid, ts, did, databytes):
             for k in range(len(obj)):
                 mqttdump(topic+'/'+str(k),obj[k], set_retain)
         else:
-            ret = client_mqtt.publish(topic, str(obj), retain=set_retain)                  
+            mqttPublish(topic, str(obj), set_retain)
 
     didStr = str(did)
     didLen = len(databytes)
@@ -85,7 +92,7 @@ def decodeData(device, canid, ts, did, databytes):
 
             if (args.json == True):
                 # Send one JSON message
-                ret = client_mqtt.publish(f"{mqttParamas[2]}/{topicStr}", json.dumps(values), retain=set_retain)
+                mqttPublish(f"{mqttParamas[2]}/{topicStr}", json.dumps(values), set_retain)
             else:
                 # Split down to scalar types
                 mqttdump(f"{mqttParamas[2]}/{topicStr}", values, set_retain)
@@ -302,7 +309,7 @@ if(args.mqtt != None):
     mqttParamas = args.mqtt.split(":")
     if(args.mqttformatstring != None):
         mqttformatstring = args.mqttformatstring
-    client_mqtt = paho.Client(paho.CallbackAPIVersion.VERSION2, "E3onCANclient.py")
+    client_mqtt = paho.Client(paho.CallbackAPIVersion.VERSION2, f"E3onCANclient.py-{device}-{uuid.uuid4().hex[:8]}")
     if((args.mqttuser != None) and (args.mqttpass != None)):
         client_mqtt.username_pw_set(args.mqttuser , password=args.mqttpass)
     client_mqtt.connect(mqttParamas[0], int(mqttParamas[1]))
