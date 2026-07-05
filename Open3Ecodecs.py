@@ -14,7 +14,7 @@
    limitations under the License.
 """
 
-import udsoncan 
+import udsoncan
 from typing import Optional, Any
 import datetime
 import json
@@ -62,7 +62,7 @@ class RawCodec(udsoncan.DidCodec):
 
 
 class O3EInt(udsoncan.DidCodec):
-    def __init__(self, string_len: int, idStr: str, scale: float = 1.0, signed:bool=False, unit:str='', desc:str='', info:str='', acc:str=''):
+    def __init__(self, string_len: int, idStr: str, scale: float = 1.0, signed:bool=False, decimals:int=0, unit:str='', desc:str='', info:str='', acc:str=''):
         self.string_len = string_len
         self.byte_width = string_len
         self.id = idStr
@@ -74,8 +74,8 @@ class O3EInt(udsoncan.DidCodec):
         self.info = info
         self.acc = acc
 
-    def encode(self, string_ascii: Any) -> bytes:        
-        if(flag_rawmode == True): 
+    def encode(self, string_ascii: Any) -> bytes:
+        if(flag_rawmode == True):
             return RawCodec.encode(self, string_ascii)
         else:
             val = round(eval(str(string_ascii))*self.scale)    # convert submitted data to numeric value and apply scaling factor
@@ -92,7 +92,7 @@ class O3EInt(udsoncan.DidCodec):
         return result
 
     def getCodecInfo(self):
-        return ({"codec": self.__class__.__name__, "len": self.string_len, "id": self.id, "args": {"scale":self.scale, "signed":self.signed, "unit":self.unit, "desc":self.desc, "info":self.info, "acc":self.acc}})
+        return ({"codec": self.__class__.__name__, "len": self.string_len, "id": self.id, "args": {"scale":self.scale, "signed":self.signed, "decimals":self.decimals, "unit":self.unit, "desc":self.desc, "info":self.info, "acc":self.acc}})
 
     def getCodecString(self):
         return (f'{self.__class__.__name__}({self.string_len}, "{self.id}", scale={self.scale}, signed={self.signed}, decimals={self.decimals}, unit="{self.unit}", desc="{self.desc}", info="{self.info}", acc="{self.acc}")')
@@ -101,22 +101,22 @@ class O3EInt(udsoncan.DidCodec):
         return self.string_len
 
 class O3EInt8(O3EInt):
-    def __init__(self, string_len: int, idStr: str, scale: float = 1.0, signed:bool=False, unit:str='', desc:str='', info:str='', acc:str=''):
+    def __init__(self, string_len: int, idStr: str, scale: float = 1.0, signed:bool=False, decimals:int=0, unit:str='', desc:str='', info:str='', acc:str=''):
         assert string_len == 1
-        O3EInt.__init__(self, string_len, idStr, scale=scale, signed=signed, unit=unit, desc=desc, info=info, acc=acc)
+        O3EInt.__init__(self, string_len, idStr, scale=scale, signed=signed, decimals=decimals, unit=unit, desc=desc, info=info, acc=acc)
 
 class O3EInt16(O3EInt):
-    def __init__(self, string_len: int, idStr: str, scale: float = 10.0, signed:bool=False, unit:str='', desc:str='', info:str='', acc:str=''):
+    def __init__(self, string_len: int, idStr: str, scale: float = 10.0, signed:bool=False, decimals:int=0, unit:str='', desc:str='', info:str='', acc:str=''):
         assert string_len == 2
-        O3EInt.__init__(self, string_len, idStr, scale=scale, signed=signed, unit=unit, desc=desc, info=info, acc=acc)
+        O3EInt.__init__(self, string_len, idStr, scale=scale, signed=signed, decimals=decimals, unit=unit, desc=desc, info=info, acc=acc)
 
 class O3EInt32(O3EInt):
-    def __init__(self, string_len: int, idStr: str, scale: float = 1.0, signed:bool=False, unit:str='', desc:str='', info:str='', acc:str=''):
+    def __init__(self, string_len: int, idStr: str, scale: float = 1.0, signed:bool=False, decimals:int=0, unit:str='', desc:str='', info:str='', acc:str=''):
         assert string_len == 4
-        O3EInt.__init__(self, string_len, idStr, scale=scale, signed=signed, unit=unit, desc=desc, info=info, acc=acc)
+        O3EInt.__init__(self, string_len, idStr, scale=scale, signed=signed, decimals=decimals, unit=unit, desc=desc, info=info, acc=acc)
 
 class O3EInt64(O3EInt):
-    def __init__(self, string_len: int, idStr: str, scale: float = 1.0, signed:bool=False, unit:str='', desc:str='', info:str='', acc:str=''):
+    def __init__(self, string_len: int, idStr: str, scale: float = 1.0, signed:bool=False, decimals:int=0, unit:str='', desc:str='', info:str='', acc:str=''):
         assert string_len == 8
         O3EInt.__init__(self, string_len, idStr, scale=scale, signed=signed, decimals=decimals, unit=unit, desc=desc, info=info, acc=acc)
 
