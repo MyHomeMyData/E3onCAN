@@ -15,6 +15,47 @@ The project is based on [open3e](https://github.com/abnoname/open3e.git) and ext
 | E380 CA | `e380` | Energy meter |
 | E3100CB | `e3100cb` | Energy meter |
 
+## What's new in V0.6.0
+
+The data point definitions in V0.6.0 are aligned with **open3e v0.7.5**.
+
+### New codec O3ESwitch
+
+Some Viessmann E3 data points carry a device- or variant-dependent payload
+whose structure depends on a *discriminator byte* in the message — for example,
+the type identifier of a connected ZigBee device. The existing codecs cannot
+handle this because they assume a fixed structure for the entire payload.
+
+`O3ESwitch` solves this by reading a configurable discriminator byte first and
+then selecting the matching sub-structure from a set of cases defined in the
+data point table. An optional *default* case handles any discriminator value not
+explicitly listed. This allows a single data point definition to correctly
+decode all variants of such a payload without any runtime configuration.
+
+See [discussion 369](https://github.com/open3e/open3e/discussions/369) for
+background and examples.
+
+### New codec O3EFloat32
+
+Several data points (e.g. DIDs 2990–2992 for battery capacity and state of
+charge) encode values as IEEE-754 single-precision floats rather than scaled
+integers. `O3EFloat32` decodes and encodes these natively, so they are
+reported as correct physical values (e.g. kWh, %) without manual scaling.
+
+See [discussion 27](https://github.com/open3e/open3e/discussions/27#discussioncomment-17362974)
+for context.
+
+### Decimals parameter for all numeric codecs
+
+All numeric codecs (`O3EInt`, `O3EInt8`, `O3EInt16`, `O3EInt32`, `O3EInt64`,
+`O3EFloat32`) now accept an optional `decimals` parameter that rounds the
+decoded value to a fixed number of decimal places:
+
+- Integer codecs default to `decimals=0` — behaviour is unchanged for existing
+  data point definitions.
+- `O3EFloat32` defaults to `decimals=2`, keeping output readable without
+  unnecessary floating-point noise.
+
 ## What's new in V0.5.0
 
 ### Variant data points replace device-specific data point files
@@ -290,6 +331,12 @@ If you enjoyed this project — or just feeling generous, consider buying me a b
     Placeholder for the next version (at the beginning of the line):
     ### **WORK IN PROGRESS**
 -->
+
+### 0.6.0 (2026-07-06)
+* (MyHomeMyData) Updated list of data points to version 20260705 (common) and 20260630 (variants) as used by open3e v0.7.5
+* (MyHomeMyData) New codec O3ESwitch: decodes a device/variant-dependent payload selected by a discriminator byte (e.g. ZigBee device type), with per-case sub-structure and a fallback default case — see [discussion 369](https://github.com/open3e/open3e/discussions/369)
+* (MyHomeMyData) New codec O3EFloat32: decodes/encodes IEEE-754 single-precision floats (e.g. DIDs 2990–2992, battery capacity/state of charge) — see [discussion 27](https://github.com/open3e/open3e/discussions/27#discussioncomment-17362974)
+* (MyHomeMyData) New decimals parameter for all numeric codecs (O3EInt/O3EInt8/16/32/64, O3EFloat32) to round decoded values and avoid noisy floating point output. Default is 0 for integer codecs (no rounding, unchanged behavior) and 2 for O3EFloat32
 
 ### 0.5.2 (2026-06-21)
 * (MyHomeMyData) Fixed: MQTT client ID was identical across all instances, causing the broker to disconnect a running session whenever another instance connected ("session taken over"), which could result in stale retained values

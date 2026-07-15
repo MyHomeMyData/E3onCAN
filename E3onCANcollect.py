@@ -30,7 +30,7 @@ import E3onCANdatapointsE3100CB
 import Open3Ecodecs
 import E3onCANcodecs
 
-pgm_ver_str = 'V0.5.2 (2026-06-21)'
+pgm_ver_str = 'V0.6.0 (2026-07-06)'
 
 tsNextDecoding = {}
 
