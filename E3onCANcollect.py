@@ -30,7 +30,7 @@ import E3onCANdatapointsE3100CB
 import Open3Ecodecs
 import E3onCANcodecs
 
-pgm_ver_str = 'V0.6.0 (2026-07-06)'
+pgm_ver_str = 'V0.6.1 (2026-11-02)'
 
 tsNextDecoding = {}
 
@@ -109,17 +109,21 @@ def decodeData(device, canid, ts, did, databytes):
                 print(f"{didNAME}: {json.dumps(values)}")
 
 def evalMessages(bus, device, args):
-    data = {
-            "len"       : 0,
-            "timestamp" : 0,
-            "databytes" : bytearray(),
-            "did"       : 0,
-            "collecting": False,
-            "D0expected": 0x21,
-    }
+    # frames of different CAN ids may interleave, so collect data per CAN id
+    dataById = {}
 
     for msg in bus:
         id = msg.arbitration_id
+        if not id in dataById:
+            dataById[id] = {
+                    "len"       : 0,
+                    "timestamp" : 0,
+                    "databytes" : bytearray(),
+                    "did"       : 0,
+                    "collecting": False,
+                    "D0expected": 0x21,
+            }
+        data = dataById[id]
         if args.dev == 'e380':
             # e380 sends 8 bytes of data w/o any protocol
             # use CAN id as did
@@ -141,9 +145,7 @@ def evalMessages(bus, device, args):
                     if data["D0expected"] > 0x2f:
                         data["D0expected"] = 0x20
                 else:
-                    # no more data
-                    if ((dids == None) or (str(data["did"]) in dids)) and (len(data["databytes"]) >= data["len"]):
-                        decodeData(device, id, data["timestamp"], data["did"],data["databytes"][0:data["len"]])
+                    # sequence broken, data is incomplete
                     data["collecting"] = False
 
             if not data["collecting"] and (msg.dlc > 4) and (msg.data[0] == 0x21) and (msg.data[3] in range(0xb0,0xc0)):
@@ -176,6 +178,12 @@ def evalMessages(bus, device, args):
                         data["databytes"] = msg.data[4:]
                         data["collecting"] = True
 
+            # decode as soon as data is complete
+            if data["collecting"] and (len(data["databytes"]) >= data["len"]):
+                if ((dids == None) or (str(data["did"]) in dids)):
+                    decodeData(device, id, data["timestamp"], data["did"],data["databytes"][0:data["len"]])
+                data["collecting"] = False
+
 def getFullDidsList(commonDids, variantDids={}):
     allDids = {}
     for did in commonDids:
@@ -192,7 +200,7 @@ parser = argparse.ArgumentParser(epilog=f'E3onCAN {help_version_string}')
 parser.add_argument("-c", "--can", type=str, help="use can device, e.g. can0")
 parser.add_argument("-f", "--file", type=str, help="use candump as input, e.g. candump_vx3")
 parser.add_argument("-dev", "--dev", type=str, help="device type --dev vcal or --dev vx3 or --dev vair or --dev vdens or --dev e380 or --dev e3100cb")
-parser.add_argument("-canid", "--canid", type=str, help="CAN id to listen to --canid 0x451, overrides CAN id selected by device")
+parser.add_argument("-canid", "--canid", type=str, help="CAN id(s) to listen to, comma separated without spaces, e.g. --canid 0x451 or --canid 0x441,0x451, overrides CAN ids selected by device")
 parser.add_argument("-r", "--read", type=str, help="read did, e.g. 0x173,0x174")
 parser.add_argument("-raw", "--raw", action='store_true', help="return raw data for all dids")
 parser.add_argument("-g", "--gap", type=str, help="minimum time gap (seconds) between decoding of specific dids. Default: immediate decoding.")
@@ -235,7 +243,7 @@ else:
 
 devCANid = {
     "vcal" : list([0x693]),
-    "vx3"  : list([0x451]),
+    "vx3"  : list([0x441,0x451]),
     "vair" : list([0x451]),
     "vdens": list([0x451]),
     "e380" : list(E3onCANdatapointsE380.dataIdentifiersE380.keys()),
@@ -244,7 +252,9 @@ devCANid = {
 
 if (args.canid != None):
     try:
-        CANid = list([int(args.canid, 0)])
+        if ' ' in args.canid:
+            raise ValueError('spaces not allowed')
+        CANid = list(dict.fromkeys(int(id, 0) for id in args.canid.split(",")))
     except:
         CANid = devCANid[device]
         print(f"WARNING: Could not evaluate given canid, using default value: {json.dumps(CANid)}")
@@ -273,12 +283,10 @@ if args.dev == 'e380':
     for id in CANid:
         if dids == None or str(id) in dids:
             filters.append({"can_id": id, "can_mask": 0x7FF, "extended": False})
-elif args.dev == 'e3100cb':
+else:
     filters = []
     for id in CANid:
         filters.append({"can_id": id, "can_mask": 0x7FF, "extended": False})
-else:
-    filters = [{"can_id": CANid[0], "can_mask": 0x7FF, "extended": False}]
 
 if(args.can != None):
     if args.file != None:
