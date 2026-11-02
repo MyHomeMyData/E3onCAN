@@ -341,13 +341,13 @@ If you enjoyed this project — or just feeling generous, consider buying me a b
 -->
 
 ### 0.6.1 (2026-11-02)
-* (MyHomeMyData) Updated list of data points to version 20261101 (common) and 20260630 (variants) as used by open3e v0.7.11
+* (MyHomeMyData) Updated list of data points to version 20261101 (common) and 20261022 (variants) as used by open3e v0.7.11
 * (MyHomeMyData) Added CANid 0x441 for listening on VX3
 * (MyHomeMyData) Option --canid now accepts a comma separated list of CAN ids, e.g. --canid 0x441,0x451
 * (MyHomeMyData) Fixed: Multi frame data is now decoded as soon as it is complete instead of waiting for the next frame on the bus
 
 ### 0.6.0 (2026-07-06)
-* (MyHomeMyData) Updated list of data points to version 20260705 (common) and 20261022 (variants) as used by open3e v0.7.5
+* (MyHomeMyData) Updated list of data points to version 20260705 (common) and 20260630 (variants) as used by open3e v0.7.5
 * (MyHomeMyData) New codec O3ESwitch: decodes a device/variant-dependent payload selected by a discriminator byte (e.g. ZigBee device type), with per-case sub-structure and a fallback default case — see [discussion 369](https://github.com/open3e/open3e/discussions/369)
 * (MyHomeMyData) New codec O3EFloat32: decodes/encodes IEEE-754 single-precision floats (e.g. DIDs 2990–2992, battery capacity/state of charge) — see [discussion 27](https://github.com/open3e/open3e/discussions/27#discussioncomment-17362974)
 * (MyHomeMyData) New decimals parameter for all numeric codecs (O3EInt/O3EInt8/16/32/64, O3EFloat32) to round decoded values and avoid noisy floating point output. Default is 0 for integer codecs (no rounding, unchanged behavior) and 2 for O3EFloat32
