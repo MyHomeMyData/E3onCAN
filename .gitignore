@@ -11,3 +11,5 @@ README.md.backup
 nohup.out
 # open3e reference files
 .open3e_develop/
+# pytest
+.pytest_cache/

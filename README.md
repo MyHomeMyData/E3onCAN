@@ -328,6 +328,14 @@ sudo systemctl disable e3oncan.service   # disable autostart
 
 A Docker version is also available, see [Docker/README.md](Docker/README.md).
 
+## Tests
+
+```
+pip install -r requirements-dev.txt
+python3 -m pytest
+```
+Tests also run automatically on GitHub for pushes and pull requests to `main` and `develop`.
+
 ## Donate
 
 <a href="https://www.paypal.com/donate/?hosted_button_id=WKY6JPYJNCCCQ"><img src="https://raw.githubusercontent.com/MyHomeMyData/E3onCAN/main/bluePayPal.svg" height="40"></a>  
