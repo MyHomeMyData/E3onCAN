@@ -340,6 +340,9 @@ If you enjoyed this project — or just feeling generous, consider buying me a b
     ### **WORK IN PROGRESS**
 -->
 
+### 0.6.2 (2026-11-04)
+* (MyHomeMyData) Fixed O3EUtf8 decoding: strings now end at the first NUL byte. Leftover bytes behind it caused a UnicodeDecodeError, e.g. for DID 628 CentralHeatingTwoCircuitName — see [open3e issue 409](https://github.com/open3e/open3e/issues/409)
+
 ### 0.6.1 (2026-11-02)
 * (MyHomeMyData) Updated list of data points to version 20261101 (common) and 20261022 (variants) as used by open3e v0.7.11
 * (MyHomeMyData) Added CANid 0x441 for listening on VX3
